@@ -6,7 +6,7 @@ defmodule Contractor.Auth.Guardian do
 
   # get a field that can Identify a user
   def subject_for_token(person = %Person{}, _claims) do
-    {:ok, "User:#{user.id}"}
+    {:ok, "User:#{person.id}"}
   end
 
   # we can't Identify that resource
