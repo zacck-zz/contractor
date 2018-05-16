@@ -22,4 +22,15 @@ defmodule Contractor.Factory do
       vendor: build(:vendor)
     }
   end
+
+  def contract_factory do
+    %Contractor.Contracts.Contract{
+      cost: 78.90,
+      end_date: "2019-12-12",
+      person: build(:person),
+      vendor: build(:vendor),
+      category: build(:category)
+    }
+  end
+
 end
