@@ -2,7 +2,8 @@ defmodule Contractor.Contracts.Vendor do
   use Ecto.Schema
   import Ecto.Changeset
   alias Contractor.{
-    Contracts.Vendor
+    Contracts.Vendor,
+    Contracts.Category
   }
 
   @type t :: %__MODULE__{}
@@ -12,6 +13,7 @@ defmodule Contractor.Contracts.Vendor do
 
   schema "vendors" do
     field :name , :string
+    has_many :categories, Category, on_delete: :delete_all
     timestamps(inserted_at: :created_at, updated_at: :updated_at)
   end
 
