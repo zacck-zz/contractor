@@ -1,11 +1,13 @@
 defmodule Contractor.Repo do
+  @moduledoc """
+  Module used to handle out application's Repo
+  """
   use Ecto.Repo, otp_app: :contractor
 
   @doc """
-  Dynamically loads the repository url from the
-  DATABASE_URL environment variable.
+  Initialize our database with the options passed in
   """
   def init(_, opts) do
-    {:ok, Keyword.put(opts, :url, System.get_env("DATABASE_URL"))}
+    {:ok, opts}
   end
 end
