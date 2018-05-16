@@ -3,7 +3,8 @@ defmodule Contractor.Accounts.PersonTest do
   alias Contractor.Accounts.Person
 
 
-  @valid_attrs %{token: "72ye82gfjh3vfywvjhwbfyuwegfytefuy%&qjbwfiu", hash: "7t24823ty4ubfucy34gruwbur3gre821hduh37ce"}
+  @valid_attrs %{email: "zacck@contractor.com", token: "72ye82gfjh3vfywvjhwbfyuwegfytefuy%&qjbwfiu", hash: "7t24823ty4ubfucy34gruwbur3gre821hduh37ce"}
+  @email_attrs %{email: "zacck-contractor.com", token: "72ye82gfjh3vfywvjhwbfyuwegfytefuy%&qjbwfiu", hash: "7t24823ty4ubfucy34gruwbur3gre821hduh37ce"}
   @invalid_attrs %{}
 
   describe "user changesets" do
@@ -12,9 +13,24 @@ defmodule Contractor.Accounts.PersonTest do
       assert changeset.valid?
     end
 
-    test "invalid with incorrect fields" do
+    test "invalid when fields are not provided" do
       changeset = Person.changeset(%Person{}, @invalid_attrs)
       refute changeset.valid?
+    end
+
+    test "invalid if email is not valid" do
+      changeset = Person.changeset(%Person{}, @email_attrs)
+      refute changeset.valid?
+    end
+
+    test "invalid if email is not unique" do
+      saved_person = insert(:person) 
+      assert Repo.aggregate(Person, :count, :id) == 1
+      {:error, invalid_changeset} =
+        Person.changeset(%Person{}, %{email: saved_person.email, token: saved_person.token, hash: saved_person.hash})
+        |> Repo.insert()
+
+      refute invalid_changeset.valid?
     end
   end
 end
