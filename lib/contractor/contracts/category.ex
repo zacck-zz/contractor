@@ -8,9 +8,13 @@ defmodule Contractor.Contracts.Category do
 
   @type t :: %__MODULE__{}
 
+  @primary_key {:id, :binary_id, autogenerate: true}
+  @foreign_key_type :binary_id
+
   schema "categories" do
     field :name, :string
-    belongs_to :vendor, Vendor
+    belongs_to :vendor, Vendor, foreign_key: :vendor_id, type: :binary_id
+    timestamps(inserted_at: :created_at, updated_at: :updated_at)
   end
 
   @spec changeset(%Category{}, map) :: {:ok, Category.t} | {:error, Ecto.Changeset.t()}

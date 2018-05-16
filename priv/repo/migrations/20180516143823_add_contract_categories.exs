@@ -7,7 +7,7 @@ defmodule Contractor.Repo.Migrations.AddContractCategories do
       add :name, :string
 
       timestamps(inserted_at: :created_at, updated_at: :updated_at)
-      add :vendor_id, references(:vendors, on_delete: :nothing, type: :uuid)
+      add :vendor_id, references(:vendors, on_delete: :nothing, type: :binary_id)
     end
   end
 end
