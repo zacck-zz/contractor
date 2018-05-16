@@ -15,4 +15,11 @@ defmodule Contractor.Factory do
       name: sequence(:name, &"vendor -#{&1}")
     }
   end
+
+  def category_factory do
+    %Contractor.Contracts.Category{
+      name: sequence(:name, &"category-#{&1}"),
+      vendor: build(:vendor)
+    }
+  end
 end

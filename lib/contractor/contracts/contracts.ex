@@ -1,6 +1,7 @@
 defmodule Contractor.Contracts do
   alias Contractor.{
     Repo,
+    Contracts.Category,
     Contracts.Vendor
   }
 
@@ -19,5 +20,15 @@ defmodule Contractor.Contracts do
     %Vendor{}
     |> Vendor.changeset(attrs)
     |> Repo.insert()
+  end
+
+  @spec get_vendor_categories(Vendor.t) :: {:ok, list(Category.t)} | {:error, String.t()}
+  def get_vendor_categories(%Vendor{id: id, name: name}) do
+    with [_|_] = categories <- Category |> Repo.all([vendor_id: id]) do
+      {:ok, categories}
+    else
+      [] ->
+        {:error, "#{name} has no categories available"}
+      end
   end
 end
