@@ -2,7 +2,7 @@ defmodule Contractor.Accounts.Person do
   use Ecto.Schema
   import Ecto.Changeset
   alias Contractor.{
-    Accounts.Person
+    Accounts.Person,
   }
 
   @type t :: %__MODULE__{}
@@ -16,6 +16,7 @@ defmodule Contractor.Accounts.Person do
     field :token, :string
     field :hash, :string
     field :email, :string
+    field :name, :string
 
     timestamps(inserted_at: :joined_on, updated_at: :updated_on)
   end
@@ -23,8 +24,8 @@ defmodule Contractor.Accounts.Person do
   @spec changeset(Person.t, map) :: Ecto.Changeset.t()
   def changeset(%Person{} = person, attrs) do
     person
-    |> cast(attrs, [:hash, :token, :email])
-    |> validate_required([:email, :hash, :token])
+    |> cast(attrs, [:hash, :token, :email, :name])
+    |> validate_required([:email, :hash, :token, :name])
     |> validate_format(:email, ~r/@/)
     |> unique_constraint(:email)
   end
