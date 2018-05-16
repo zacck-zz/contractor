@@ -34,6 +34,7 @@ defmodule Contractor.Mixfile do
   defp deps do
     [
       {:ex_machina, "~> 2.2", only: :test},
+      {:guardian, "~> 1.0"},
       {:phoenix, "~> 1.3.0"},
       {:phoenix_pubsub, "~> 1.0"},
       {:phoenix_ecto, "~> 3.2"},
@@ -41,7 +42,9 @@ defmodule Contractor.Mixfile do
       {:phoenix_html, "~> 2.10"},
       {:phoenix_live_reload, "~> 1.0", only: :dev},
       {:gettext, "~> 0.11"},
-      {:cowboy, "~> 1.0"}
+      {:cowboy, "~> 1.0"},
+      {:ueberauth, "~> 0.4"},
+      {:ueberauth_identity, "~> 0.2"}
     ]
   end
 
