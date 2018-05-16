@@ -3,6 +3,7 @@ defmodule Contractor.Accounts.Person do
   import Ecto.Changeset
   alias Contractor.{
     Accounts.Person,
+    Contracts.Contract
   }
 
   @type t :: %__MODULE__{}
@@ -19,6 +20,7 @@ defmodule Contractor.Accounts.Person do
     field :name, :string
 
     timestamps(inserted_at: :joined_on, updated_at: :updated_on)
+    has_many :contracts, Contract, on_delete: :delete_all
   end
 
   @spec changeset(Person.t, map) :: Ecto.Changeset.t()
