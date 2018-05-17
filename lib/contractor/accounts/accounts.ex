@@ -1,4 +1,8 @@
 defmodule Contractor.Accounts  do
+  @moduledoc """
+  Boundary Module for the Accounts context,
+  This module handles all accounts related Actions
+  """
   alias Contractor.{
     Repo,
     Accounts.Person

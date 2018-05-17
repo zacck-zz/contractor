@@ -23,7 +23,6 @@ config :logger, :console,
   metadata: [:request_id]
 
 
-
 # Configures Guardian
 config :contractor, Contractor.Auth.Guardian,
   issuer: "VoldersContractor",
