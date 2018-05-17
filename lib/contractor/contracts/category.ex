@@ -1,4 +1,8 @@
 defmodule Contractor.Contracts.Category do
+  @moduledoc """
+  Module to handle the Category Records in the system
+  Use this to create and validate changesets
+  """
   use Ecto.Schema
   import Ecto.Changeset
   alias Contractor.{

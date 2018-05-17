@@ -1,4 +1,8 @@
 defmodule Contractor.Contracts.Vendor do
+  @moduledoc """
+  Module to handle the Vendor Records in the system
+  Use this to create and validate changesets
+  """
   use Ecto.Schema
   import Ecto.Changeset
   alias Contractor.{

@@ -1,4 +1,8 @@
 defmodule Contractor.Contracts.Contract do
+  @moduledoc """
+  Module to handle Contract Records on the system
+  Use this module to create and Validate changesets
+  """
   use Ecto.Schema
   import Ecto.Changeset
 

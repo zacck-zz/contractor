@@ -1,4 +1,9 @@
 defmodule Contractor.Contracts do
+  @moduledoc """
+  Boundary Module for the Contracts context
+  This module contains all actions that are associated with
+  Managing User Contracts, Contract Vendors and Contract Categories
+  """
   alias Contractor.{
     Repo,
     Accounts.Person,

@@ -1,4 +1,7 @@
 defmodule Contractor.Accounts.Person do
+  @moduledoc """
+  Module to Handle Chagesets for the Person 
+  """
   use Ecto.Schema
   import Ecto.Changeset
   alias Contractor.{
