@@ -77,6 +77,16 @@ defmodule Contractor.Contracts do
     end
   end
 
+  @spec get_vendor(String.t) :: {:ok, Vendor.t} | {:error, String.t()}
+  def get_vendor(id) do
+    with %Vendor{} = vendor <- Vendor |> Repo.get(id) do
+      {:ok, vendor}
+    else
+      nil ->
+        {:error, "Vendor with id: #{id} doesn't exist" }
+      end
+  end
+
   @spec add_vendor(map) :: {:ok, Vendor.t} | {:error, Ecto.Changeset.t()}
   def add_vendor(attrs) do
     %Vendor{}

@@ -14,6 +14,19 @@ defmodule Contractor.ContractsTest do
   @valid_contract %{cost: 90.89, end_date: "2018-12-12"}
   describe "Contracts boundary " do
 
+    test "can fetch a specific vendor" do
+      vendor = insert(:vendor)
+      assert Repo.aggregate(Vendor, :count, :id) == 1
+      {:ok, saved_vendor} = Contracts.get_vendor(vendor.id)
+      assert saved_vendor.name == vendor.name
+    end
+
+    test "fails when fetch a specific vendor that doesn't exist" do
+      id = "d965afab-d71e-4616-bd8f-f7604cb3df27"
+      assert Repo.aggregate(Vendor, :count, :id) == 0
+      assert {:error, "Vendor with id: #{id} doesn't exist"} == Contracts.get_vendor(id)
+    end
+
     test "can fetch a specific contract" do
       contract = insert(:contract)
       assert Repo.aggregate(Contract, :count, :id) == 1
