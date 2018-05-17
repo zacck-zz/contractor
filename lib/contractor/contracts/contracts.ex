@@ -96,7 +96,9 @@ defmodule Contractor.Contracts do
 
   @spec get_vendor_categories(Vendor.t) :: {:ok, list(Category.t)} | {:error, String.t()}
   def get_vendor_categories(%Vendor{id: id, name: name}) do
-    with [_|_] = categories <- Category |> Repo.all([vendor_id: id]) do
+    query = from c in Category, where: c.vendor_id == ^id
+
+    with [_|_] = categories <- Repo.all(query) do
       {:ok, categories}
     else
       [] ->

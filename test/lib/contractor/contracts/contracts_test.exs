@@ -135,7 +135,7 @@ defmodule Contractor.ContractsTest do
       assert Repo.aggregate(Vendor, :count, :id) == 0
     end
 
-    test "fetches a contracts categories" do
+    test "fetches a vendors categories" do
       vendor = insert(:vendor)
       insert_list(@num, :category, vendor: vendor)
       assert Repo.aggregate(Vendor, :count, :id) == 1
