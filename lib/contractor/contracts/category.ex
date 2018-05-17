@@ -24,4 +24,10 @@ defmodule Contractor.Contracts.Category do
     |> validate_required([:name])
   end
 
+  @spec create_changeset(Vendor.t, map) :: Ecto.Changeset.t()
+  def create_changeset(%Vendor{} = vendor, attrs) do
+    %Category{}
+    |> changeset(attrs)
+    |> put_assoc(:vendor, vendor)
+  end
 end
