@@ -26,6 +26,15 @@ defmodule Contractor.Contracts.ContractTest do
       assert changeset = Contract.create_changeset(person, vendor, category, %{})
       refute changeset.valid?
     end
+
+    test "valid update changeset when required fields are set " do
+      insert(:contract)
+      vendor = insert(:vendor)
+      category = insert(:category, vendor: vendor)
+      contract = Repo.one(Contract) |> Repo.preload([:vendor, :category, :person])
+      changeset = Contract.update_changeset(contract, vendor, category, @valid_attrs)
+      assert changeset.valid?
+    end
   end
 
 end
