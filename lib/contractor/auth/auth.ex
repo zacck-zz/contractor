@@ -2,7 +2,10 @@ defmodule Contractor.Auth do
   @moduledoc """
   Boundary module for authentication actions
   """
+  import Ecto.Query, only: [from: 2]
+  alias Comeonin.Bcrypt
   alias Contractor.{
+    Repo,
     Accounts.Person
   }
 
