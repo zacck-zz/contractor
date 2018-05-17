@@ -35,6 +35,8 @@ defmodule Contractor.Mixfile do
     [
       {:absinthe_ecto, "~> 0.1.0"},
       {:absinthe_plug, "~> 1.4.0"},
+      {:bcrypt_elixir, "~> 0.12"},
+      {:comeonin, "~> 4.0"},
       {:ex_machina, "~> 2.2", only: :test},
       {:guardian, "~> 1.0"},
       {:phoenix, "~> 1.3.0"},
