@@ -31,7 +31,7 @@ defmodule Contractor.Accounts  do
       {:ok, person}
     else
       nil ->
-        {:error, "No user with id #{id} exists"}
+        {:error, "No user with id: #{id} exists"}
       end
   end
 

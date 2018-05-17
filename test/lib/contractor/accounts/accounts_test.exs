@@ -40,7 +40,7 @@ defmodule Contractor.AccountsTest do
     test "errors out if user with id doesnt exist" do
       id = "d965afab-d71e-4616-bd8f-f7604cb3df27"
       assert Repo.aggregate(Person, :count, :id) == 0
-      assert {:error, "No user with id #{id} exists"} == Accounts.get_person(id)
+      assert {:error, "No user with id: #{id} exists"} == Accounts.get_person(id)
     end
 
     test "deletes a given user" do
