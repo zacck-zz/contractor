@@ -4,6 +4,8 @@ defmodule Contractor.Contracts do
   This module contains all actions that are associated with
   Managing User Contracts, Contract Vendors and Contract Categories
   """
+  import Ecto.Query, warn: false
+
   alias Contractor.{
     Repo,
     Accounts.Person,
@@ -11,6 +13,21 @@ defmodule Contractor.Contracts do
     Contracts.Contract,
     Contracts.Vendor
   }
+
+  @spec get_user_contracts(Person.t) :: {:ok, list(Contract.t)} | {:error, String.t()}
+  def get_user_contracts(%Person{id: id, name: name} = _person) do
+    q = from c in Contract, where: c.person_id == ^id and c.end_date > from_now(0, "day")
+
+    query = from c in q, order_by: [asc: c.end_date]
+
+    with [_|_] = contracts <- Repo.all(query) do
+      {:ok, contracts}
+    else
+      [] ->
+        {:error, "#{name} has no active contracts"}
+      end
+  end
+
 
   @spec add_contract(Person.t, Vendor.t, Category.t, map) :: {:ok, Contract.t} | {:error, Ecto.Changeset.t()}
   def add_contract(%Person{} = person, %Vendor{} = vendor, %Category{} = category, attrs) do

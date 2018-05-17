@@ -14,6 +14,22 @@ defmodule Contractor.ContractsTest do
   @valid_contract %{cost: 90.89, end_date: "2018-12-12"}
   describe "Contracts boundary " do
 
+    test "can fetch user's contracts" do
+      person = insert(:person)
+      insert_list(@num, :contract)
+      insert_list(@num, :contract, person: person)
+      assert Repo.aggregate(Contract, :count, :id) == @num * 2
+      {:ok, contracts} = Contracts.get_user_contracts(person)
+      assert Enum.count(contracts) == @num
+    end
+
+    test "errors out when user has no contracts" do
+      person = insert(:person)
+      insert_list(@num, :contract)
+      assert Repo.aggregate(Contract, :count, :id) == @num
+      assert {:error, "#{person.name} has no active contracts"} == Contracts.get_user_contracts(person)
+    end
+
     test "can add a user contract" do
       person = insert(:person)
       vendor = insert(:vendor)
