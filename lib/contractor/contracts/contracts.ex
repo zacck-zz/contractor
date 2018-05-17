@@ -14,6 +14,16 @@ defmodule Contractor.Contracts do
     Contracts.Vendor
   }
 
+  @spec get_contract(String.t()) :: {:ok, Contract.t} | {:error, String.t()}
+  def get_contract(id)do
+    with %Contract{} = contract <- Contract |> Repo.get(id) do
+      {:ok, contract}
+    else
+      nil ->
+        {:error, "Contract with id: #{id} doesn't exist" }
+      end
+  end
+
   @spec get_user_contracts(Person.t) :: {:ok, list(Contract.t)} | {:error, String.t()}
   def get_user_contracts(%Person{id: id, name: name} = _person) do
     q = from c in Contract, where: c.person_id == ^id and c.end_date > from_now(0, "day")
