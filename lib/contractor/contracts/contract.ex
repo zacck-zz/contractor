@@ -33,6 +33,8 @@ defmodule Contractor.Contracts.Contract do
     %Contract{}
     |> cast(attrs,[:cost, :end_date])
     |> validate_required([:cost, :end_date])
+    |> validate_number(:cost, greater_than: 0)
+    |> validate_future_date(:end_date)
     |> put_assoc(:person, person)
     |> put_assoc(:vendor, vendor)
     |> put_assoc(:category, category)
@@ -43,8 +45,20 @@ defmodule Contractor.Contracts.Contract do
     contract
     |> cast(attrs, [:cost, :end_date])
     |> validate_required([:cost, :end_date])
+    |> validate_number(:cost, greater_than: 0)
+    |> validate_future_date(:end_date)
     |> put_assoc(:person, contract.person)
     |> put_assoc(:vendor, [vendor_id: vendor.id])
     |> put_assoc(:category, [category_id: category.id])
+  end
+
+  @spec validate_future_date(Ecto.Changeset.t(), atom(), list()) :: Ecto.Changeset.t()
+  def validate_future_date(changeset, field, opts \\ []) do
+    validate_change(changeset, field, fn _, end_date ->
+      case Date.compare(end_date, Date.utc_today()) do
+        :gt -> []
+        :lt -> [{field, opts[:message] || "end_date has to be later than today"}]
+      end
+    end)
   end
 end
