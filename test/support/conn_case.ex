@@ -18,11 +18,13 @@ defmodule ContractorWeb.ConnCase do
   using do
     quote do
       # Import conveniences for testing with connections
+      alias Contractor.Repo
       use Phoenix.ConnTest
       import ContractorWeb.Router.Helpers
 
       # The default endpoint for testing
       @endpoint ContractorWeb.Endpoint
+      import Contractor.Factory
     end
   end
 
