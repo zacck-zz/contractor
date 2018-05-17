@@ -30,6 +30,13 @@ defmodule Contractor.ContractsTest do
       assert {:error, "#{person.name} has no active contracts"} == Contracts.get_user_contracts(person)
     end
 
+    test "errors out when user's contracts are expired" do
+      person = insert(:person)
+      insert_list(@num, :contract, person: person, end_date: "2016-12-12")
+      assert Repo.aggregate(Contract, :count, :id) == @num
+      assert {:error, "#{person.name} has no active contracts"} == Contracts.get_user_contracts(person)
+    end
+
     test "can add a user contract" do
       person = insert(:person)
       vendor = insert(:vendor)
