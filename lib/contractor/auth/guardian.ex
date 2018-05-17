@@ -5,8 +5,8 @@ defmodule Contractor.Auth.Guardian do
   alias Contractor.{Accounts, Accounts.Person}
 
   # get a field that can Identify a user
-  def subject_for_token(person = %Person{}, _claims) do
-    {:ok, "User:#{user.id}"}
+  def subject_for_token(%Person{} = person, _claims) do
+    {:ok, "Person:#{person.id}"}
   end
 
   # we can't Identify that resource
