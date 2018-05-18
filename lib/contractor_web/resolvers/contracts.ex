@@ -8,6 +8,7 @@ defmodule ContractorWeb.Resolvers.Contracts do
     Accounts.Person,
     Contracts,
     Contracts.Category,
+    Contracts.Contract,
     Contracts.Vendor
   }
 
@@ -44,5 +45,12 @@ defmodule ContractorWeb.Resolvers.Contracts do
       {:ok, %Category{} = category} <- Contracts.get_category(params.category_id) do
         Contracts.add_contract(person, vendor, category, %{cost: params.cost, end_date: params.end_date})
       end
+  end
+
+  @spec delete_contract(any(), any(), any()) :: {:ok, Contract.t} | {:error, String.t()}
+  def delete_contract(_, %{input: params}, _) do
+    with {:ok, %Contract{} = contract} <- Contracts.get_contract(params.id) do
+      Contracts.delete_contract(contract)
+    end
   end
 end

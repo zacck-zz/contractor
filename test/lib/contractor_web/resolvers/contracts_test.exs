@@ -56,6 +56,37 @@ defmodule ContractorWeb.Resolvers.ContractsTest do
       assert saved_contract["endDate"] == variables["input"]["end_date"]
     end
 
+    test "deletes a single contract", %{conn: conn} do
+      contract = insert(:contract)
+
+      variables = %{
+        "input" => %{
+          "id" => contract.id
+        }
+      }
+
+      query = """
+      mutation($input: ContractDeleteInput!) {
+        deleteContract(input: $input) {
+          id
+          cost
+        }
+      }
+      """
+
+      assert Repo.aggregate(Contract, :count, :id) == 1
+
+      res = post conn, "api/graph", query: query, variables: variables
+
+      %{
+        "data" => %{
+          "deleteContract" => _contract
+        }
+      } = json_response(res, 200)
+
+      assert Repo.aggregate(Contract, :count, :id) == 0
+    end
+
     test "fetches a single contract", %{conn: conn} do
       contract = insert(:contract)
       assert Repo.aggregate(Contract, :count, :id) == 1

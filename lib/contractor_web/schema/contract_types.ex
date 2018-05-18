@@ -32,4 +32,9 @@ defmodule ContractorWeb.Schema.ContractTypes do
     field :cost, non_null(:float)
     field :end_date, non_null(:date)
   end
+
+  @desc "A Contract Deletion Input"
+  input_object :contract_delete_input do
+    field :id, non_null(:id)
+  end
 end
