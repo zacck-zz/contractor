@@ -24,6 +24,12 @@ defmodule ContractorWeb.Schema do
       arg :input, non_null(:contract_update_input)
       resolve &Resolvers.Contracts.update_contract/3
     end
+
+    @desc "Start a session"
+    field :login, :session do
+      arg :input, non_null(:login_input)
+      resolve &Resolvers.Accounts.login/3
+    end
   end
 
   query do
