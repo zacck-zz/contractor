@@ -18,7 +18,7 @@ defmodule Contractor.Auth do
   end
 
   @spec validate_hash(nil | Person.t, String.t) :: {:ok, Person.t} | {:error, String.t()}
-  defp validate_hash(nil, _), do: {:error, "Incorrect username or password"}
+  defp validate_hash(nil, _), do: {:error, "Incorrect email or password"}
 
   defp validate_hash(%Person{} = person, password) do
     case Bcrypt.checkpw(password, person.hash) do
