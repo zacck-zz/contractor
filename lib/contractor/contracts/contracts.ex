@@ -14,6 +14,16 @@ defmodule Contractor.Contracts do
     Contracts.Vendor
   }
 
+  @spec get_category(String.t()) :: {:ok, Contract.t} | {:error, String.t()}
+  def get_category(id) do
+    with %Category{} = category <- Category |> Repo.get(id) do
+      {:ok, category}
+    else
+      nil ->
+        {:error, "Category with id: #{id} doesn't exist"}
+    end
+  end
+
   @spec get_contract(String.t()) :: {:ok, Contract.t} | {:error, String.t()}
   def get_contract(id)do
     with %Contract{} = contract <- Contract |> Repo.get(id) do

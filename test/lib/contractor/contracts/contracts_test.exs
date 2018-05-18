@@ -14,6 +14,19 @@ defmodule Contractor.ContractsTest do
   @valid_contract %{cost: 90.89, end_date: "2018-12-12"}
   describe "Contracts boundary " do
 
+    test "can fetch a specific vendor category" do
+      cat = insert(:category)
+      assert Repo.aggregate(Category, :count, :id) == 1
+      {:ok, saved_cat} = Contracts.get_category(cat.id)
+      assert saved_cat.name == cat.name
+    end
+
+    test "errors out if not category with id exists" do
+      id = "d965afab-d71e-4616-bd8f-f7604cb3df27"
+      assert Repo.aggregate(Category, :count, :id) == 0
+      assert {:error, "Category with id: #{id} doesn't exist"} == Contracts.get_category(id)
+    end
+
     test "can fetch a specific vendor" do
       vendor = insert(:vendor)
       assert Repo.aggregate(Vendor, :count, :id) == 1
