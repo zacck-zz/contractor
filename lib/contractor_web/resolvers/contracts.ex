@@ -53,4 +53,13 @@ defmodule ContractorWeb.Resolvers.Contracts do
       Contracts.delete_contract(contract)
     end
   end
+
+  @spec update_contract(any(), any(), any()) :: {:ok, Contract.t} | {:error, String.t()}
+  def update_contract(_, %{input: params}, _) do
+    with {:ok, %Contract{} = contract} <- Contracts.get_contract(params.id),
+      {:ok, %Vendor{} = vendor} <- Contracts.get_vendor(params.vendor_id),
+      {:ok, %Category{} = category} <- Contracts.get_category(params.category_id) do
+        Contracts.update_contract(contract, vendor, category, %{cost: params.cost, end_date: params.end_date})
+      end
+  end
 end

@@ -18,6 +18,12 @@ defmodule ContractorWeb.Schema do
       arg :input, non_null(:contract_delete_input)
       resolve &Resolvers.Contracts.delete_contract/3
     end
+
+    @desc "Update a User Contract"
+    field :update_contract, :contract do
+      arg :input, non_null(:contract_update_input)
+      resolve &Resolvers.Contracts.update_contract/3
+    end
   end
 
   query do

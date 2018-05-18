@@ -56,6 +56,56 @@ defmodule ContractorWeb.Resolvers.ContractsTest do
       assert saved_contract["endDate"] == variables["input"]["end_date"]
     end
 
+    test "updates a contract", %{conn: conn} do
+      [vendor, vendor1] = insert_pair(:vendor)
+      category = insert(:category, vendor: vendor)
+      category1 = insert(:category, vendor: vendor1)
+      contract = insert(:contract, vendor: vendor1, category: category1) 
+      assert Repo.aggregate(Contract, :count, :id) == 1
+
+      variables = %{
+        "input" => %{
+          "id" => contract.id,
+          "vendor_id" => vendor.id,
+          "category_id" => category.id,
+          "cost" => 900.9,
+          "end_date" => Date.to_string(Date.add(Date.utc_today, 1))
+        }
+      }
+
+
+      query = """
+      mutation($input: ContractUpdateInput!) {
+        updateContract(input: $input){
+          id
+          vendorId
+          categoryId
+          personId
+          cost
+          endDate
+        }
+      }
+      """
+
+      res = post conn, "api/graph", query: query, variables: variables
+
+      %{
+        "data" => %{
+          "updateContract" => updated_contract
+        }
+      } = json_response(res, 200)
+
+
+
+      assert Repo.aggregate(Contract, :count, :id) == 1
+      assert updated_contract["id"] == contract.id
+      assert updated_contract["personId"] == contract.person_id
+      assert updated_contract["categoryId"] == category.id
+      assert updated_contract["vendorId"] == vendor.id
+      assert updated_contract["endDate"] == variables["input"]["end_date"]
+    end
+
+
     test "deletes a single contract", %{conn: conn} do
       contract = insert(:contract)
 

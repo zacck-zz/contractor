@@ -37,4 +37,13 @@ defmodule ContractorWeb.Schema.ContractTypes do
   input_object :contract_delete_input do
     field :id, non_null(:id)
   end
+
+  @desc "A Contract Update Input"
+  input_object :contract_update_input do
+    field :id, non_null(:id)
+    field :vendor_id, non_null(:id)
+    field :category_id, non_null(:id)
+    field :cost, non_null(:float)
+    field :end_date, non_null(:date)
+  end
 end
