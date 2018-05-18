@@ -34,6 +34,12 @@ defmodule ContractorWeb.Schema do
       arg :id, :id
       resolve &Resolvers.Contracts.get_user_contracts/3
     end
+
+    @desc "fetches a single contract"
+    field :get_contract, :contract do
+      arg :id, :id
+      resolve &Resolvers.Contracts.get_contract/3
+    end
   end
 
   @desc "A Users Contract"
