@@ -3,13 +3,41 @@ defmodule ContractorWeb.Resolvers.ContractsTest do
 
   alias Contractor.{
     Contracts.Category,
+    Contracts.Contract,
     Contracts.Vendor
   }
 
   @num 5
 
   describe "Contracts Resolver" do
-    test "fetches all vendots", %{conn: conn} do
+    test "fetches a person's Contracts", %{conn: conn} do
+      person = insert(:person)
+      insert_list(@num, :contract)
+      insert_list(@num, :contract, person: person)
+      assert Repo.aggregate(Contract, :count, :id) == @num * 2
+      query = """
+      query {
+        getUserContracts(id: "#{person.id}"){
+          cost
+          personId
+          endDate
+        }
+      }
+      """
+      res = post conn, "api/graph", query: query
+
+      %{
+        "data" => %{
+          "getUserContracts" => user_contracts
+        }
+      } = json_response(res, 200)
+
+      assert Enum.count(user_contracts)
+      [contract]= Enum.take(user_contracts, 1)
+      assert contract["personId"] == person.id
+    end
+
+    test "fetches all vendors", %{conn: conn} do
       insert_list(@num, :vendor)
       assert Repo.aggregate(Vendor, :count, :id) == @num
       query = """
