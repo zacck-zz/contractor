@@ -3,6 +3,8 @@ defmodule ContractorWeb.Schema do
   alias ContractorWeb.Resolvers
 
   import_types Absinthe.Type.Custom
+  import_types __MODULE__.ContractTypes
+  import_types __MODULE__.AccountTypes
 
 
 
@@ -40,37 +42,5 @@ defmodule ContractorWeb.Schema do
       arg :id, :id
       resolve &Resolvers.Contracts.get_contract/3
     end
-  end
-
-  @desc "A Users Contract"
-  object :contract do
-    field :id, :id
-    field :cost, :float
-    field :end_date, :date
-    field :person_id, :id
-    field :vendor_id, :id
-    field :category_id, :id
-  end
-
-  @desc  "A system user"
-  object :person do
-    field :id, :id
-    field :token, :string
-    field :hash, :string
-    field :email, :string
-    field :name, :string
-  end
-
-  @desc "A Contract Vendor"
-  object :vendor do
-    field :id, :string
-    field :name, :string
-  end
-
-  @desc "A Contract Category"
-  object :category do
-    field :id, :id
-    field :vendor_id, :id
-    field :name, :string
   end
 end
