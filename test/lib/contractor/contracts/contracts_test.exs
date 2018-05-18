@@ -97,6 +97,8 @@ defmodule Contractor.ContractsTest do
       refute updated_contract.end_date == contract.end_date
       assert Repo.aggregate(Contract, :count, :id) == 1
       assert updated_contract.cost == @valid_contract.cost
+      assert updated_contract.vendor_id == vendor.id
+      assert updated_contract.category_id == category.id
       assert Date.to_string(updated_contract.end_date) == @valid_contract.end_date
     end
 
