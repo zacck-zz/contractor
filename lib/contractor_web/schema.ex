@@ -2,6 +2,9 @@ defmodule ContractorWeb.Schema do
   use Absinthe.Schema
   alias ContractorWeb.Resolvers
 
+  import_types Absinthe.Type.Custom
+
+
 
   query do
     @desc "fetches all app users"
@@ -11,7 +14,7 @@ defmodule ContractorWeb.Schema do
 
     @desc "fetches a user"
     field :get_person, :person do
-      arg :id, :string
+      arg :id, :id
       resolve &Resolvers.Accounts.get_person/3
     end
 
@@ -22,14 +25,30 @@ defmodule ContractorWeb.Schema do
 
     @desc "fetches vendor categories"
     field :get_vendor_categories, list_of(:category) do
-      arg :id, :string
+      arg :id, :id
       resolve &Resolvers.Contracts.get_vendor_categories/3
     end
+
+    @desc "fetches user contracts"
+    field :get_user_contracts, list_of(:contract) do
+      arg :id, :id
+      resolve &Resolvers.Contracts.get_user_contracts/3
+    end
+  end
+
+  @desc "A Users Contract"
+  object :contract do
+    field :id, :id
+    field :cost, :float
+    field :end_date, :date
+    field :person_id, :id
+    field :vendor_id, :id
+    field :category_id, :id
   end
 
   @desc  "A system user"
   object :person do
-    field :id, :string
+    field :id, :id
     field :token, :string
     field :hash, :string
     field :email, :string
