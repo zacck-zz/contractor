@@ -11,6 +11,7 @@ defmodule ContractorWeb.Router do
 
   pipeline :api do
     plug :accepts, ["json"]
+    plug ContractorWeb.Context
   end
 
   scope "/api" do
