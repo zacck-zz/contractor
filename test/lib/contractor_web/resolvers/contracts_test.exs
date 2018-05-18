@@ -10,6 +10,35 @@ defmodule ContractorWeb.Resolvers.ContractsTest do
   @num 5
 
   describe "Contracts Resolver" do
+
+    test "fetches a single contract", %{conn: conn} do
+      contract = insert(:contract)
+      assert Repo.aggregate(Contract, :count, :id) == 1
+
+      query = """
+      query {
+        getContract(id: "#{contract.id}"){
+          cost
+          id
+          vendorId
+        }
+      }
+      """
+
+      res = post conn, "api/graph", query: query
+
+      %{
+        "data" => %{
+          "getContract" => saved_contract
+        }
+      } = json_response(res, 200)
+
+      assert saved_contract["id"] == contract.id
+      assert saved_contract["vendorId"] == contract.vendor_id
+      assert saved_contract["cost"] == contract.cost
+
+    end
+
     test "fetches a person's Contracts", %{conn: conn} do
       person = insert(:person)
       insert_list(@num, :contract)

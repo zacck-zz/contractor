@@ -30,4 +30,9 @@ defmodule ContractorWeb.Resolvers.Contracts do
         {:ok, contracts}
       end
   end
+
+  @spec get_contract(any(), any(), any()) :: {:ok, Contract.t} | {:error, String.t()}
+  def get_contract(_, args, _) do
+    Contracts.get_contract(args.id)
+  end
 end
