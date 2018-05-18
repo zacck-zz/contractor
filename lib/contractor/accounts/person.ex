@@ -1,6 +1,6 @@
 defmodule Contractor.Accounts.Person do
   @moduledoc """
-  Module to Handle Chagesets for the Person 
+  Module to Handle Changesets for the Person
   """
   use Ecto.Schema
   import Ecto.Changeset
@@ -30,8 +30,8 @@ defmodule Contractor.Accounts.Person do
   @spec changeset(Person.t, map) :: Ecto.Changeset.t()
   def changeset(%Person{} = person, attrs) do
     person
-    |> cast(attrs, [:hash, :token, :email, :name]) 
-    |> validate_required([:email, :hash, :token, :name])
+    |> cast(attrs, [:hash,  :email, :name])
+    |> validate_required([:email, :hash, :name])
     |> hash_passord()
     |> validate_format(:email, ~r/@/)
     |> unique_constraint(:email)
