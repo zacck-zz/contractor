@@ -11,6 +11,51 @@ defmodule ContractorWeb.Resolvers.ContractsTest do
 
   describe "Contracts Resolver" do
 
+    test "saves a  user contract", %{conn: conn} do
+      person = insert(:person)
+      vendor = insert(:vendor)
+      category =  insert(:category, vendor: vendor)
+
+      variables = %{
+        "input" => %{
+          "vendor_id" => vendor.id,
+          "category_id" => category.id,
+          "person_id" => person.id,
+          "cost" => 78.9,
+          "end_date" => Date.to_string(Date.add(Date.utc_today, 1))
+        }
+      }
+
+      query = """
+      mutation($input: ContractInput!){
+        addUserContract(input: $input) {
+          personId
+          vendorId
+          categoryId
+          id
+          cost
+          endDate
+        }
+      }
+      """
+
+      assert Repo.aggregate(Contract, :count, :id) == 0
+
+      res = post conn, "api/graph", query: query, variables: variables
+
+      %{
+        "data" => %{
+          "addUserContract" => saved_contract
+        }
+      } = json_response(res, 200)
+
+      assert Repo.aggregate(Contract, :count, :id) == 1
+      assert saved_contract["personId"] == person.id
+      assert saved_contract["vendorId"] ==  vendor.id
+      assert saved_contract["cost"] == variables["input"]["cost"]
+      assert saved_contract["endDate"] == variables["input"]["end_date"]
+    end
+
     test "fetches a single contract", %{conn: conn} do
       contract = insert(:contract)
       assert Repo.aggregate(Contract, :count, :id) == 1

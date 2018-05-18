@@ -6,7 +6,13 @@ defmodule ContractorWeb.Schema do
   import_types __MODULE__.ContractTypes
   import_types __MODULE__.AccountTypes
 
-
+  mutation do
+    @desc "Add a user contract"
+    field :add_user_contract, :contract do
+      arg :input, non_null (:contract_input)
+      resolve &Resolvers.Contracts.add_contract/3
+    end
+  end
 
   query do
     @desc "fetches all app users"

@@ -7,6 +7,7 @@ defmodule ContractorWeb.Resolvers.Contracts do
     Accounts,
     Accounts.Person,
     Contracts,
+    Contracts.Category,
     Contracts.Vendor
   }
 
@@ -31,8 +32,17 @@ defmodule ContractorWeb.Resolvers.Contracts do
       end
   end
 
-  @spec get_contract(any(), any(), any()) :: {:ok, Contract.t} | {:error, String.t()}
+  @spec get_contract(any(), map, any()) :: {:ok, Contract.t} | {:error, String.t()}
   def get_contract(_, args, _) do
     Contracts.get_contract(args.id)
+  end
+
+  @spec add_contract(any(), map, any()) :: {:ok, Contract.t} | {:error, String.t()}
+  def add_contract(_, %{input: params}, _) do
+    with {:ok, %Person{} = person} <- Accounts.get_person(params.person_id),
+      {:ok, %Vendor{} =  vendor} <- Contracts.get_vendor(params.vendor_id),
+      {:ok, %Category{} = category} <- Contracts.get_category(params.category_id) do
+        Contracts.add_contract(person, vendor, category, %{cost: params.cost, end_date: params.end_date})
+      end
   end
 end

@@ -23,4 +23,13 @@ defmodule ContractorWeb.Schema.ContractTypes do
     field :vendor_id, :id
     field :name, :string
   end
+
+  @desc "A Contract Input Object"
+  input_object :contract_input do
+    field :vendor_id, non_null(:id)
+    field :person_id, non_null(:id)
+    field :category_id, non_null(:id)
+    field :cost, non_null(:float)
+    field :end_date, non_null(:date)
+  end
 end
