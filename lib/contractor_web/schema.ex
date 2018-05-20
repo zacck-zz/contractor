@@ -1,10 +1,19 @@
 defmodule ContractorWeb.Schema do
   use Absinthe.Schema
   alias ContractorWeb.Resolvers
+  alias ContractorWeb.Schema.Middleware
 
   import_types Absinthe.Type.Custom
   import_types __MODULE__.ContractTypes
   import_types __MODULE__.AccountTypes
+
+  def middleware(middleware, _field, %{identifier: :mutation}) do
+    middleware ++ [Middleware.ChangesetErrors]
+  end
+
+  def middleware(middleware, _, _) do
+    middleware
+  end
 
   mutation do
     @desc "Add a user contract"
