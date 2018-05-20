@@ -30,8 +30,8 @@ defmodule ContractorWeb.Resolvers.AccountsTest do
     end
 
 
-    test "fetches a single person from the system", %{conn: conn} do
-      person = insert(:person)
+    @tag :authenticated
+    test "fetches a single person from the system", %{conn: conn, current_user: person} do
       assert Repo.aggregate(Person, :count, :id) == 1
       query = """
       query {

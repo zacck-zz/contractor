@@ -10,9 +10,8 @@ defmodule ContractorWeb.Resolvers.ContractsTest do
   @num 5
 
   describe "Contracts Resolver" do
-
-    test "saves a  user contract", %{conn: conn} do
-      person = insert(:person)
+    @tag :authenticated
+    test "saves a  user contract", %{conn: conn, current_user: person} do
       vendor = insert(:vendor)
       category =  insert(:category, vendor: vendor)
 
@@ -56,11 +55,12 @@ defmodule ContractorWeb.Resolvers.ContractsTest do
       assert saved_contract["endDate"] == variables["input"]["end_date"]
     end
 
+    @tag :authenticated
     test "updates a contract", %{conn: conn} do
       [vendor, vendor1] = insert_pair(:vendor)
       category = insert(:category, vendor: vendor)
       category1 = insert(:category, vendor: vendor1)
-      contract = insert(:contract, vendor: vendor1, category: category1) 
+      contract = insert(:contract, vendor: vendor1, category: category1)
       assert Repo.aggregate(Contract, :count, :id) == 1
 
       variables = %{
@@ -106,6 +106,7 @@ defmodule ContractorWeb.Resolvers.ContractsTest do
     end
 
 
+    @tag :authenticated
     test "deletes a single contract", %{conn: conn} do
       contract = insert(:contract)
 
@@ -137,6 +138,7 @@ defmodule ContractorWeb.Resolvers.ContractsTest do
       assert Repo.aggregate(Contract, :count, :id) == 0
     end
 
+    @tag :authenticated
     test "fetches a single contract", %{conn: conn} do
       contract = insert(:contract)
       assert Repo.aggregate(Contract, :count, :id) == 1
@@ -165,8 +167,8 @@ defmodule ContractorWeb.Resolvers.ContractsTest do
 
     end
 
-    test "fetches a person's Contracts", %{conn: conn} do
-      person = insert(:person)
+    @tag :authenticated
+    test "fetches a person's Contracts", %{conn: conn, current_user: person} do
       insert_list(@num, :contract)
       insert_list(@num, :contract, person: person)
       assert Repo.aggregate(Contract, :count, :id) == @num * 2
@@ -192,6 +194,7 @@ defmodule ContractorWeb.Resolvers.ContractsTest do
       assert contract["personId"] == person.id
     end
 
+    @tag :authenticated
     test "fetches all vendors", %{conn: conn} do
       insert_list(@num, :vendor)
       assert Repo.aggregate(Vendor, :count, :id) == @num
@@ -214,6 +217,7 @@ defmodule ContractorWeb.Resolvers.ContractsTest do
       assert Enum.count(vendors) == @num
     end
 
+    @tag :authenticated
     test "fetches vendor categories", %{conn: conn} do
       vendor = insert(:vendor)
       insert_list(@num, :category)
