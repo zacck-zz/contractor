@@ -2,7 +2,10 @@ defmodule Contractor.Auth.Guardian do
   use Guardian, otp_app: :contractor
 
   # get accounts context to get or create user
-  alias Contractor.{Accounts, Accounts.Person}
+  alias Contractor.{
+    Accounts.Person,
+    Repo
+  }
 
   # get a field that can Identify a user
   def subject_for_token(%Person{} = person, _claims) do
@@ -19,6 +22,6 @@ defmodule Contractor.Auth.Guardian do
   def resource_from_claims(_), do: {:error, :missing_subject}
 
   # pic a resource from the provided subject
-  defp resource_from_subject("Person:" <> id), do: {:ok, Accounts.get_person(id)}
+  defp resource_from_subject("Person:" <> id), do: {:ok, Repo.get!(Person, id)}
   defp resource_from_subject(_), do: {:error, :unknown_resource_type}
 end
