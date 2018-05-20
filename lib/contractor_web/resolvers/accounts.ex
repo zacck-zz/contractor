@@ -26,4 +26,9 @@ defmodule ContractorWeb.Resolvers.Accounts do
         {:ok, %{token: token, person: person}}
       end
   end
+
+  @spec add_user(any(), map, any()) :: {:ok, Person.t} | {:error, String.t()}
+  def add_user(_, %{input: params}, _) do
+    Accounts.create_person(params)
+  end
 end

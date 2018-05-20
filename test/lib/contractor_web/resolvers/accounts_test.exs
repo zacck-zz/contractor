@@ -7,6 +7,40 @@ defmodule ContractorWeb.Resolvers.AccountsTest do
 
   @num 5
   describe "Accounts resolver" do
+
+    test "adds a person to system", %{conn: conn} do
+      assert Repo.aggregate(Person, :count, :id) == 0
+
+      variables = %{
+        "input" => %{
+          "email" => "zacck@contractor.com",
+          "hash" => "67q3yu2bduw3gf8wubfduiw",
+          "name" => "Zacck Osiemo"
+        }
+      }
+
+      query = """
+        mutation($input: AddUserInput!){
+          addUser(input: $input){
+            name
+            email
+          }
+        }
+      """
+
+      res = post conn, "api/graph", query: query, variables: variables
+
+      %{
+        "data" => %{
+          "addUser" => person
+        }
+      } = json_response(res, 200)
+
+      assert Repo.aggregate(Person, :count, :id) == 1
+      assert person["name"] == variables["input"]["name"]
+      assert person["email"] == variables["input"]["email"]
+    end
+
     test "fetches people on the system", %{conn: conn} do
       insert_list(@num, :person)
       assert Repo.aggregate(Person, :count, :id) == @num

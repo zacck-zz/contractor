@@ -16,6 +16,12 @@ defmodule ContractorWeb.Schema do
   end
 
   mutation do
+    @desc "Add User"
+    field :add_user, :person do
+      arg :input, non_null(:add_user_input)
+      resolve & Resolvers.Accounts.add_user/3 
+    end
+
     @desc "Add a user contract"
     field :add_user_contract, :contract do
       arg :input, non_null (:contract_input)

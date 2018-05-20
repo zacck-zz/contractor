@@ -19,4 +19,11 @@ defmodule ContractorWeb.Schema.AccountTypes do
     field :email, :string
     field :password, :string
   end
+
+  @desc "Add User input"
+  input_object :add_user_input do
+    field :email, :string
+    field :hash, :string
+    field :name, :string
+  end
 end
