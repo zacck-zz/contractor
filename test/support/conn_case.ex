@@ -14,6 +14,8 @@ defmodule ContractorWeb.ConnCase do
   """
 
   use ExUnit.CaseTemplate
+  use Phoenix.ConnTest
+  import Contractor.Factory
 
   using do
     quote do
@@ -34,7 +36,24 @@ defmodule ContractorWeb.ConnCase do
     unless tags[:async] do
       Ecto.Adapters.SQL.Sandbox.mode(Contractor.Repo, {:shared, self()})
     end
-    {:ok, conn: Phoenix.ConnTest.build_conn()}
+
+    {conn, current_user} = cond do
+      tags[:authenticated] ->
+        build_conn()
+        |> add_authentication_headers(tags[:authenticated])
+      true ->
+        conn = build_conn()
+        {conn, nil}
+    end
+
+    {:ok, conn: conn, current_user: current_user}
+  end
+
+  defp add_authentication_headers(conn, true) do
+    user = insert(:person)
+
+    conn = conn |> Contractor.AuthenticationTestHelpers.authenticate(user)
+    {conn, user}
   end
 
 end
