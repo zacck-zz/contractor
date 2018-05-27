@@ -5,7 +5,7 @@ import Http
 import Json.Encode as Encode 
 import Json.Decode as Decode 
 import Types exposing (Model, Msg(..))
-import Utils exposing (graphUrl, queryBody, resultDecoder, authedGraphRequest)
+import Utils exposing (graphUrl, queryBody, authedGraphRequest)
 
 -- Draw up a people query
 peopleQuery : String

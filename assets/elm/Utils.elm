@@ -3,7 +3,10 @@ module Utils exposing (..)
 
 import Json.Encode as Encode 
 import Json.Decode as Decode exposing(Decoder)
+import Json.Decode.Pipeline as Pipeline 
 import Http
+import Types exposing(Person)
+
 
 -- Url for the graphql endpoint
 graphUrl : String
@@ -28,20 +31,27 @@ queryBody data =
    in
     body
 
--- Decode Http String Result
-resultDecoder : Decoder String
-resultDecoder =
-     Decode.string
+
+
+-- Decoder for person graph
+personDecoder : Decoder Person 
+personDecoder =
+    Pipeline.decode Person 
+        |> Pipeline.required "id" Decode.string 
+        |> Pipeline.required "name" Decode.string 
+        |> Pipeline.required "email" Decode.string
+
+
 
 
 -- build authenticated graphRequest
 authedGraphRequest : String  -> String -> Http.Request String
-authedGraphRequest token body =
+authedGraphRequest  token body =
   { method = "POST"
   , headers = [ Http.header "Authorization" ("Bearer " ++ token)]
   , url = graphUrl
   , body = body |> queryBody
-  , expect = Http.expectString
+  , expect =  Http.expectString
   , timeout = Nothing
   , withCredentials = False
   }
