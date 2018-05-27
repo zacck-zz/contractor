@@ -1,10 +1,11 @@
 module Main exposing (..)
 
-import Html exposing (Html, div, text)
+import Html exposing(Html)
 import Http
 import Types exposing (Model, Msg(..))
 import State exposing (peopleQuery, update)
 import Utils exposing (authedGraphRequest)
+import View exposing (view)
 
 main =
   Html.program
@@ -19,6 +20,4 @@ init : (Model, Cmd Msg)
 init = { response = "Waiting For a response ... "} ! [
  Http.send FetchPeople (authedGraphRequest "" peopleQuery) ]
 
-view : Model -> Html Msg
-view model =
-    div [] [ text model.response ]
+
