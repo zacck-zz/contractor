@@ -16,8 +16,14 @@ main =
       }
 
 
+initialModel : Model 
+initialModel =
+    { response = "Waiting for a response ..."
+    , token =""
+    }
+
 init : (Model, Cmd Msg)
-init = { response = "Waiting For a response ... "} ! [
+init = initialModel ! [
  Http.send FetchPeople (authedGraphRequest "" peopleQuery) ]
 
 
