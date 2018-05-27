@@ -19,7 +19,7 @@ defmodule ContractorWeb.Schema do
     @desc "Add User"
     field :add_user, :person do
       arg :input, non_null(:add_user_input)
-      resolve & Resolvers.Accounts.add_user/3 
+      resolve & Resolvers.Accounts.add_user/3
     end
 
     @desc "Add a user contract"
@@ -52,39 +52,39 @@ defmodule ContractorWeb.Schema do
 
   query do
     @desc "fetches all app users"
-    field :get_people, list_of(:person) do
+    field :people, list_of(:person) do
       resolve &Resolvers.Accounts.get_people/3
     end
 
     @desc "fetches a user"
-    field :get_person, :person do
+    field :person, :person do
       arg :id, :id
       middleware Middleware.Authorize, :any
       resolve &Resolvers.Accounts.get_person/3
     end
 
     @desc "fetches vendors"
-    field :get_vendors, list_of(:vendor) do
+    field :vendors, list_of(:vendor) do
       middleware Middleware.Authorize, :any
       resolve &Resolvers.Contracts.get_vendors/3
     end
 
     @desc "fetches vendor categories"
-    field :get_vendor_categories, list_of(:category) do
+    field :categories, list_of(:category) do
       arg :id, :id
       middleware Middleware.Authorize, :any
       resolve &Resolvers.Contracts.get_vendor_categories/3
     end
 
     @desc "fetches user contracts"
-    field :get_user_contracts, list_of(:contract) do
+    field :contracts, list_of(:contract) do
       arg :id, :id
       middleware Middleware.Authorize, :any
       resolve &Resolvers.Contracts.get_user_contracts/3
     end
 
     @desc "fetches a single contract"
-    field :get_contract, :contract do
+    field :contract, :contract do
       arg :id, :id
       middleware Middleware.Authorize, :any
       resolve &Resolvers.Contracts.get_contract/3
