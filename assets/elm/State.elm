@@ -27,10 +27,10 @@ update msg model =
      FetchPeople response ->
        case response of
          Ok result ->
-           { response = result } ! []
+             ({ model | response = result }, Cmd.none)
 
          Err err ->
-           { response = toString err } ! []
+           ({ model | response = toString err }, Cmd.none)
 
 
 
