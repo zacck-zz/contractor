@@ -34,7 +34,7 @@ peopleQuery : String
 peopleQuery =
     """
     {
-      getPeople {
+      people {
         id
         name
       }
