@@ -6,7 +6,7 @@ import Route
 
 type alias Model =
     { response : String
-    , token : Maybe String
+    , token : String
     , page : Page
     , name : String
     , email : String
@@ -45,3 +45,12 @@ type alias Person =
     , name : String
     , email : String
     }
+
+type alias SignUpInput =
+  { email : String
+  , hash : String
+  , name : String
+  }
+
+type alias SignUpResponse =
+  { id : String }
