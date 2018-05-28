@@ -6,6 +6,7 @@ import Html.Events exposing(onClick, onInput)
 import Html.Attributes exposing(..)
 import State exposing(setRoute)
 import Route
+import String
 
 
 
@@ -37,8 +38,8 @@ view model =
 
 homeView : Model -> Html Msg
 homeView model =
-    case model.token of
-        Nothing ->
+    case String.isEmpty model.token of
+        True ->
             div [ class "app-box"]
                 [ div [ class "home-box"]
                       [ div [ class "message"] [ text "Welcome to contractor"]
@@ -50,7 +51,7 @@ homeView model =
                       ]
                 ]
 
-        Just token ->
+        False ->
             div []
                 [ a [ onClick <| NavigateTo Route.Contracts ]
                     [ text "Go to Contracts"]
