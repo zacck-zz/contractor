@@ -2,13 +2,17 @@ module Main exposing (..)
 
 import Html exposing(Html)
 import Http
-import Types exposing (Model, Msg(..))
-import State exposing (peopleQuery, update)
+import Types exposing (Model, Msg(..), Page(..))
+import State exposing (peopleQuery, update, setRoute)
 import Utils exposing (authedGraphRequest)
 import View exposing (view)
+import Navigation exposing (Location)
+
+
+
 
 main =
-  Html.program
+  Navigation.program SetRoute
       { init = init
       , view = view
       , update = update
@@ -20,10 +24,10 @@ initialModel : Model
 initialModel =
     { response = "Waiting for a response ..."
     , token =""
+    , page = Home 
     }
 
-init : (Model, Cmd Msg)
-init = initialModel ! [
+init : Location -> (Model, Cmd Msg)
+init location = setRoute location initialModel ! [
  Http.send FetchPeople (authedGraphRequest "" peopleQuery) ]
-
 
