@@ -1,7 +1,7 @@
 module State exposing(..)
 
-import Types exposing (Model, Msg(..), Page(..), SignUpInput, Registration, RegistrationResponse, Person, SignUpDetails, PeopleResponse)
-import Utils exposing (validateSignUp, sendAuthedMutation, sendAuthedQuery)
+import Types exposing (Model, Msg(..), Page(..), SignUpInput, Registration, RegistrationResponse, Person, SignUpDetails, PeopleResponse, LoginInput, LoginDetails,Session)
+import Utils exposing (validateSignUp, validateSignIn, sendAuthedMutation, sendAuthedQuery)
 import Navigation exposing (Location)
 import UrlParser
 import Route exposing (toPath)
@@ -38,6 +38,33 @@ addUserMutation signUpInput =
                 { input =  signUpInput.input }
 
 
+-- login Mutation
+loginMutation : LoginInput -> Request Mutation Session
+loginMutation loginInput =
+    let
+        inputVar =
+          Var.required "input"
+              .input
+              (Var.object "LoginInput"
+                  [ Var.field "password" .password Var.string
+                  , Var.field "email" .email Var.string
+                  ]
+              )
+    in
+      extract
+        (field "login"
+          [("input", Arg.variable inputVar)]
+          (object Session
+                |> with (field "token" [] string)
+          )
+        )
+        |> mutationDocument
+        |> request
+              { input = loginInput.input }
+
+
+
+
 peopleQuery : Request Query (List Person)
 peopleQuery =
     extract
@@ -57,6 +84,13 @@ peopleQuery =
 
 
 
+-- login reques dispatch
+sendSignInRequest : LoginInput -> Model -> Cmd Msg
+sendSignInRequest loginInput model =
+    sendAuthedMutation model (loginMutation loginInput)
+      |> Task.attempt ReceiveSessionResponse
+
+
 -- signup request
 sendSignUpRequest : SignUpInput -> Model -> Cmd Msg
 sendSignUpRequest signUpInput model =
@@ -69,6 +103,9 @@ sendPeopleRequest : Model -> Cmd Msg
 sendPeopleRequest model =
     sendAuthedQuery model peopleQuery
       |> Task.attempt ReceivePeopleResponse
+
+
+
 
 
 -- parsePath reads the path in the url and turns it into a new type
@@ -138,3 +175,18 @@ update msg model =
        in
           ({ model | people = people}
           , Cmd.none)
+
+     SubmitSignIn ->
+      case validateSignIn model of
+        [] ->
+          (model, (sendSignInRequest { input = (LoginDetails model.email model.password)} model))
+        errors ->
+          ({ model | errors = errors}, Cmd.none)
+
+     ReceiveSessionResponse response ->
+      case response of
+        Ok result ->
+          ( { model | token = result.token }, (Navigation.newUrl <| toPath Route.Contracts))
+
+        Err err ->
+          ({ model | errors = [toString err] }, Cmd.none)
