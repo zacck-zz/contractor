@@ -3,8 +3,7 @@ module Main exposing (..)
 import Html exposing(Html)
 import Http
 import Types exposing (Model, Msg(..), Page(..))
-import State exposing (peopleQuery, update, setRoute)
-import Utils exposing (authedGraphRequest)
+import State exposing (update, setRoute)
 import View exposing (view)
 import Navigation exposing (Location)
 
@@ -23,7 +22,7 @@ main =
 initialModel : Model
 initialModel =
     { response = "Waiting for a response ..."
-    , token = Nothing
+    , token = ""
     , page = Home
     , name = ""
     , email = ""
