@@ -24,7 +24,7 @@ view model =
             div [] [ text "ContractDetails" ]
 
         SignIn ->
-            div [] [ text "Login Page" ]
+            div [] [ (loginView model) ]
 
         SignUp ->
             div [] [ (signUpView model) ]
@@ -46,7 +46,7 @@ homeView model =
                       , div
                           []
                           [ button [ onClick (NavigateTo Route.SignUp) ] [text "Sign Up"]
-                          , button [ onClick (NavigateTo Route.SignUp) ] [text "Sign In"]
+                          , button [ onClick (NavigateTo Route.SignIn) ] [text "Sign In"]
                           ]
                       ]
                 ]
@@ -62,7 +62,7 @@ signUpView : Model -> Html Msg
 signUpView model =
     div [ class "app-box" ]
         [ div [ class "home-box" ]
-              [ div [] [(signUpErrors model.errors)]
+              [ div [] [(formErrors model.errors)]
               , label [ class "label"]
                 [ text "Name"
                 , input [ type_ "text", placeholder "Type your name", onInput SetName, value model.name ] []
@@ -84,8 +84,23 @@ signUpView model =
         ]
 
 
-signUpErrors : List String -> Html msg
-signUpErrors errors =
+formErrors : List String -> Html msg
+formErrors errors =
   errors
       |> List.map(\error -> li [] [ text error])
       |> ul []
+
+
+loginView : Model -> Html Msg
+loginView model =
+    div [ class "app-box"]
+        [ div [] [(formErrors model.errors)]
+        , label [ class "label"]
+          [ text "Email"
+          , input [ type_ "text", placeholder "Your email address", onInput SetEmail, value model.email ] []
+          ]
+        , label [ class "label"]
+          [ text "Password"
+          , input [ type_ "password", onInput SetPassword, value model.password ] []
+          ]
+        , button [ onClick SubmitSignIn ] [ text "SIGN IN"] ]
