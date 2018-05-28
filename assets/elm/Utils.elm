@@ -6,7 +6,7 @@ import Json.Decode as Decode exposing(Decoder)
 import Json.Decode.Pipeline as Pipeline
 import Http
 import Types exposing(Person)
-import Validate exposing (Validator, ifBlank, ifInvalidEmail, validate)
+import Validate exposing (Validator, ifBlank, ifInvalidEmail, ifFalse, validate)
 import Types exposing(Model)
 
 
@@ -21,6 +21,7 @@ signUpValidator =
           ]
       , ifBlank .password "Please enter a password"
       , ifBlank .passwordconf "Please enter a Password Confirmation"
+      , ifFalse (\model -> model.password == model.passwordconf) "Password must match Password Confirmation"
       ]
 
 validateSignUp : Model -> List String
