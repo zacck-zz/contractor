@@ -27,6 +27,24 @@ signUpValidator =
       , ifFalse (\model -> model.password == model.passwordconf) "Password must match Password Confirmation"
       ]
 
+-- validates a model for signins
+signInValidator : Validator String Model
+signInValidator =
+  Validate.all
+    [ Validate.firstError
+        [ ifBlank .email "Please enter an email address"
+        , ifInvalidEmail .email (\_ -> "Please enter a valid email address")
+        ]
+    , Validate.firstError
+        [ ifTrue (\model -> String.length model.password < 8) "Password need to be atleast 8 characters"
+        , ifBlank .password "Please enter a password"
+        ]
+    ]
+
+validateSignIn : Model -> List String
+validateSignIn model =
+    validate signInValidator model
+
 validateSignUp : Model -> List String
 validateSignUp model =
     validate signUpValidator model
