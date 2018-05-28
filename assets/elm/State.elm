@@ -1,47 +1,74 @@
 module State exposing(..)
 
-import Types exposing (Model, Msg(..), Page(..), SignUpInput, SignUpResponse)
-import Utils exposing (validateSignUp)
+import Types exposing (Model, Msg(..), Page(..), SignUpInput, Registration, RegistrationResponse, Person, SignUpDetails, PeopleResponse)
+import Utils exposing (validateSignUp, sendAuthedMutation, sendAuthedQuery)
 import Navigation exposing (Location)
 import UrlParser
 import Route exposing (toPath)
 import GraphQL.Request.Builder exposing (..)
 import GraphQL.Request.Builder.Arg as Arg
 import GraphQL.Request.Builder.Variable as Var
+import Task exposing (Task)
 
 
 
 -- addUser Mutation
-addUserMutation : SignUpInput -> Request Mutation SignUpResponse
+addUserMutation : SignUpInput -> Request Mutation Registration
 addUserMutation signUpInput =
     let
-        nameVar =
-          Var.required "name" .name Var.string
-
-        hashVar =
-          Var.required "hash" .hash Var.string
-
-        emailVar =
-          Var.required "email" .email Var.string
+        inputVar =
+          Var.required "input"
+              .input
+              (Var.object "AddUserInput"
+                  [ Var.field "name" .name Var.string
+                  , Var.field "email" .email Var.string
+                  , Var.field "hash" .hash Var.string
+                  ]
+              )
      in
         extract
-            (field "login"
-              [ ("name", Arg.variable nameVar)
-              , ("hash", Arg.variable hashVar)
-              , ("email", Arg.variable emailVar)
-              ]
-              (object SignUpResponse
+            (field "addUser"
+              [ ("input", Arg.variable inputVar) ]
+              (object Registration
                     |> with (field "id" [] string)
               )
             )
             |> mutationDocument
             |> request
-                { name =  signUpInput.name
-                , email =  signUpInput.email
-                , hash = signUpInput.hash
-                }
+                { input =  signUpInput.input }
 
 
+peopleQuery : Request Query (List Person)
+peopleQuery =
+    extract
+      (field "people"
+        []
+        (list
+            (object Person
+                |> with (field "id" [] string)
+                |> with (field "name" [] string)
+                |> with (field "email" [] string)
+            )
+        )
+      )
+      |> queryDocument
+      |> request
+            {}
+
+
+
+-- signup request
+sendSignUpRequest : SignUpInput -> Model -> Cmd Msg
+sendSignUpRequest signUpInput model =
+    sendAuthedMutation model (addUserMutation signUpInput)
+          |> Task.attempt ReceiveRegistrationResponse
+
+
+-- people request
+sendPeopleRequest : Model -> Cmd Msg
+sendPeopleRequest model =
+    sendAuthedQuery model peopleQuery
+      |> Task.attempt ReceivePeopleResponse
 
 
 -- parsePath reads the path in the url and turns it into a new type
@@ -95,6 +122,28 @@ update msg model =
      SubmitSignUp ->
        case validateSignUp model of
          [] ->
-           ({ model  | errors = []}, Cmd.none)
+           (model, (sendSignUpRequest { input = (SignUpDetails model.name model.email model.password)} model))
          errors ->
            ({ model | errors = errors}, Cmd.none)
+     GetPeople ->
+       (model, (sendPeopleRequest model))
+     ReceiveRegistrationResponse response ->
+       case response of
+         Ok result ->
+           ({ model | registration = Just result}, Cmd.none)
+
+         Err err ->
+           ({ model | errors = [ toString err ]}, Cmd.none)
+
+     ReceivePeopleResponse response ->
+       let
+           people =
+             case response of
+               Ok result ->
+                 result
+
+               Err err ->
+                 []
+       in
+          ({ model | people = people}
+          , Cmd.none)
