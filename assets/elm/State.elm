@@ -5,7 +5,7 @@ import Http
 import Json.Encode as Encode
 import Json.Decode as Decode
 import Types exposing (Model, Msg(..), Page(..))
-import Utils exposing (graphUrl, queryBody, authedGraphRequest)
+import Utils exposing (graphUrl, queryBody, authedGraphRequest, validateSignUp)
 import Navigation exposing (Location)
 import UrlParser
 import Route exposing (toPath)
@@ -60,7 +60,6 @@ update msg model =
 
      SetRoute location ->
          ( setRoute location model)
-
      NavigateTo route ->
        (model , (Navigation.newUrl <| toPath route))
      SetEmail email ->
@@ -71,3 +70,9 @@ update msg model =
        ({ model | passwordconf = passwordconf}, Cmd.none)
      SetName name ->
        ({ model | name = name }, Cmd.none)
+     SubmitSignUp ->
+       case validateSignUp model of
+         [] ->
+           ({ model  | errors = []}, Cmd.none)
+         errors ->
+           ({ model | errors = errors}, Cmd.none)
