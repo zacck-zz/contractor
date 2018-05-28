@@ -8,7 +8,7 @@ import Types exposing (Model, Msg(..), Page(..))
 import Utils exposing (graphUrl, queryBody, authedGraphRequest)
 import Navigation exposing (Location)
 import UrlParser
-import Route
+import Route exposing (toPath)
 
 -- Draw up a people query
 peopleQuery : String
@@ -56,5 +56,9 @@ update msg model =
 
          Err err ->
            ({ model | response = toString err }, Cmd.none)
+
      SetRoute location ->
          ( setRoute location model)
+
+     NavigateTo route ->
+       (model , (Navigation.newUrl <| toPath route))
