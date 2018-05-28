@@ -41,8 +41,8 @@ homeView model =
                       [ div [ class "message"] [ text "Welcome to contractor"]
                       , div
                           []
-                          [ button [] [text "Sign Up"]
-                          , button [] [text "Sign In"]
+                          [ button [ onClick (NavigateTo Route.SignUp) ] [text "Sign Up"]
+                          , button [ onClick (NavigateTo Route.SignUp) ] [text "Sign In"]
                           ]
                       ]
                 ]
