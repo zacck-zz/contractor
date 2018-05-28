@@ -20,21 +20,20 @@ main =
       }
 
 
-initialModel : Model 
+initialModel : Model
 initialModel =
     { response = "Waiting for a response ..."
     , token = Nothing
-    , page = Home 
+    , page = Home
     }
 
 init : Location -> (Model, Cmd Msg)
 init location =
-  let 
-      model =
-       setRoute location initialModel 
-   in 
-       ( model, Cmd.none)
+  let
+      initTuple =
+       setRoute location initialModel
+   in
+       initTuple
 
 
 -- Http.send FetchPeople (authedGraphRequest "" peopleQuery) ]
-

@@ -1,9 +1,9 @@
 module State exposing(..)
 
 
-import Http 
-import Json.Encode as Encode 
-import Json.Decode as Decode 
+import Http
+import Json.Encode as Encode
+import Json.Decode as Decode
 import Types exposing (Model, Msg(..), Page(..))
 import Utils exposing (graphUrl, queryBody, authedGraphRequest)
 import Navigation exposing (Location)
@@ -23,28 +23,28 @@ peopleQuery =
     """
 
 -- parsePath reads the path in the url and turns it into a new type
-setRoute : Location -> Model -> Model 
+setRoute : Location -> Model -> (Model, Cmd Msg)
 setRoute location model =
     let
-       route = 
+       route =
         UrlParser.parsePath Route.route location
            |> Maybe.withDefault Route.Home
-    in   
-        case route of 
+    in
+        case route of
             Route.Home ->
-                { model | page = Home }
+                ({ model | page = Home }, Cmd.none)
             Route.Contracts ->
-                { model | page = Contracts }
+                ({ model | page = Contracts }, Cmd.none)
             Route.ContractDetails ->
-                { model | page = ContractDetails }
+                ({ model | page = ContractDetails }, Cmd.none)
             Route.SignIn ->
-                { model | page = SignIn }
+                ({ model | page = SignIn }, Cmd.none)
             Route.SignUp ->
-                { model | page = SignUp }
+                ({ model | page = SignUp }, Cmd.none)
             Route.AddContract ->
-                { model | page = AddContract }
-            Route.UpdateContract -> 
-                { model | page = UpdateContract } 
+                ({ model | page = AddContract }, Cmd.none)
+            Route.UpdateContract ->
+                ({ model | page = UpdateContract }, Cmd.none)
 
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
@@ -56,9 +56,5 @@ update msg model =
 
          Err err ->
            ({ model | response = toString err }, Cmd.none)
-     SetRoute location -> 
-         ( setRoute location model, Cmd.none )
-
-
-
-
+     SetRoute location ->
+         ( setRoute location model)
