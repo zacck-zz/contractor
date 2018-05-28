@@ -1,11 +1,25 @@
 module Utils exposing (..)
 
 
-import Json.Encode as Encode 
+import Json.Encode as Encode
 import Json.Decode as Decode exposing(Decoder)
-import Json.Decode.Pipeline as Pipeline 
+import Json.Decode.Pipeline as Pipeline
 import Http
 import Types exposing(Person)
+import Validate exposing (Validator, ifBlank, ifInvalidEmail, validate)
+import Types exposing(Model)
+
+
+-- validates a model for signups
+signUpValidator : Validator String Model
+signUpValidator =
+    Validate.all
+      [ ifBlank .name  "Please enter a name"
+      , Validate.firstError
+          [ ifBlank .email "Please enter an email address"]
+      , ifBlank .password "Please enter a password"
+      , ifBlank .passwordconf "Please enter a Password Confirmation"
+      ]
 
 
 -- Url for the graphql endpoint
@@ -34,11 +48,11 @@ queryBody data =
 
 
 -- Decoder for person graph
-personDecoder : Decoder Person 
+personDecoder : Decoder Person
 personDecoder =
-    Pipeline.decode Person 
-        |> Pipeline.required "id" Decode.string 
-        |> Pipeline.required "name" Decode.string 
+    Pipeline.decode Person
+        |> Pipeline.required "id" Decode.string
+        |> Pipeline.required "name" Decode.string
         |> Pipeline.required "email" Decode.string
 
 
@@ -56,6 +70,3 @@ authedGraphRequest  token body =
   , withCredentials = False
   }
     |> Http.request
-
-
-
