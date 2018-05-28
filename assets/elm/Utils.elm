@@ -16,11 +16,16 @@ signUpValidator =
     Validate.all
       [ ifBlank .name  "Please enter a name"
       , Validate.firstError
-          [ ifBlank .email "Please enter an email address"]
+          [ ifBlank .email "Please enter an email address"
+          , ifInvalidEmail .email (\_ -> "Please enter a valid email address")
+          ]
       , ifBlank .password "Please enter a password"
       , ifBlank .passwordconf "Please enter a Password Confirmation"
       ]
 
+validateSignUp : Model -> List String
+validateSignUp model =
+    validate signUpValidator model
 
 -- Url for the graphql endpoint
 graphUrl : String
