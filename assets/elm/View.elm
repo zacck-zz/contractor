@@ -1,14 +1,14 @@
 module View exposing (..)
 
-import Html exposing(Html, text, div)
+import Html exposing(Html, text, div, button)
 import Types exposing(Model, Msg(..), Page(..))
-
+import Html.Attributes exposing(..)
 
 view : Model -> Html Msg
 view model =
     case model.page of 
         Home ->
-            div [] [ text model.response ]
+            div [] [ (homeView model) ]
         
         Contracts ->
             div [] [ text "Contracts" ]
@@ -29,3 +29,19 @@ view model =
             div [] [ text "Update Contract" ]
 
 
+homeView : Model -> Html Msg 
+homeView model =
+    case model.token of 
+        Nothing -> 
+            div [ class "app-box"] 
+                [ div [] [ text "Welcome to contracor"] 
+                , div 
+                    []
+                    [ button [] [text "Sign Up"]
+                    , button [] [text "Sign In"]
+                    ]
+                ]
+        
+        Just token -> 
+            div [] [ text "Logged In" ]
+    
