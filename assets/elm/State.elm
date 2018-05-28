@@ -1,26 +1,48 @@
 module State exposing(..)
 
-
-import Http
-import Json.Encode as Encode
-import Json.Decode as Decode
-import Types exposing (Model, Msg(..), Page(..))
-import Utils exposing (graphUrl, queryBody, authedGraphRequest, validateSignUp)
+import Types exposing (Model, Msg(..), Page(..), SignUpInput, SignUpResponse)
+import Utils exposing (validateSignUp)
 import Navigation exposing (Location)
 import UrlParser
 import Route exposing (toPath)
+import GraphQL.Request.Builder exposing (..)
+import GraphQL.Request.Builder.Arg as Arg
+import GraphQL.Request.Builder.Variable as Var
 
--- Draw up a people query
-peopleQuery : String
-peopleQuery =
-    """
-    {
-      people {
-        id
-        name
-      }
-    }
-    """
+
+
+-- addUser Mutation
+addUserMutation : SignUpInput -> Request Mutation SignUpResponse
+addUserMutation signUpInput =
+    let
+        nameVar =
+          Var.required "name" .name Var.string
+
+        hashVar =
+          Var.required "hash" .hash Var.string
+
+        emailVar =
+          Var.required "email" .email Var.string
+     in
+        extract
+            (field "login"
+              [ ("name", Arg.variable nameVar)
+              , ("hash", Arg.variable hashVar)
+              , ("email", Arg.variable emailVar)
+              ]
+              (object SignUpResponse
+                    |> with (field "id" [] string)
+              )
+            )
+            |> mutationDocument
+            |> request
+                { name =  signUpInput.name
+                , email =  signUpInput.email
+                , hash = signUpInput.hash
+                }
+
+
+
 
 -- parsePath reads the path in the url and turns it into a new type
 setRoute : Location -> Model -> (Model, Cmd Msg)
