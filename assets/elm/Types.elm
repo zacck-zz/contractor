@@ -12,7 +12,9 @@ type alias Model =
     , email : String
     , password : String
     , passwordconf : String
+    , errors : List String
     }
+
 
 
 type Page
@@ -33,7 +35,9 @@ type Msg
     | SetEmail String
     | SetPassword String
     | SetPasswordConf String
-    | SetName String 
+    | SetName String
+    | SubmitSignUp
+
 
 
 type alias Person =
