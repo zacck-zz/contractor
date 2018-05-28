@@ -145,7 +145,7 @@ defmodule ContractorWeb.Resolvers.ContractsTest do
 
       query = """
       query {
-        getContract(id: "#{contract.id}"){
+        contract(id: "#{contract.id}"){
           cost
           id
           vendorId
@@ -157,7 +157,7 @@ defmodule ContractorWeb.Resolvers.ContractsTest do
 
       %{
         "data" => %{
-          "getContract" => saved_contract
+          "contract" => saved_contract
         }
       } = json_response(res, 200)
 
@@ -174,7 +174,7 @@ defmodule ContractorWeb.Resolvers.ContractsTest do
       assert Repo.aggregate(Contract, :count, :id) == @num * 2
       query = """
       query {
-        getUserContracts(id: "#{person.id}"){
+        contracts{
           cost
           personId
           endDate
@@ -185,7 +185,7 @@ defmodule ContractorWeb.Resolvers.ContractsTest do
 
       %{
         "data" => %{
-          "getUserContracts" => user_contracts
+          "contracts" => user_contracts
         }
       } = json_response(res, 200)
 
@@ -200,7 +200,7 @@ defmodule ContractorWeb.Resolvers.ContractsTest do
       assert Repo.aggregate(Vendor, :count, :id) == @num
       query = """
       query {
-        getVendors{
+        vendors{
           name
         }
       }
@@ -210,7 +210,7 @@ defmodule ContractorWeb.Resolvers.ContractsTest do
 
       %{
         "data" =>  %{
-          "getVendors" => vendors
+          "vendors" => vendors
         }
       } = json_response(res, 200)
 
@@ -227,7 +227,7 @@ defmodule ContractorWeb.Resolvers.ContractsTest do
 
       query = """
       query {
-        getVendorCategories(id: "#{vendor.id}"){
+        categories(id: "#{vendor.id}"){
           vendor_id
           name
           id
@@ -240,7 +240,7 @@ defmodule ContractorWeb.Resolvers.ContractsTest do
 
       %{
         "data" => %{
-          "getVendorCategories" => categories
+          "categories" => categories
         }
       } = json_response(res, 200)
 

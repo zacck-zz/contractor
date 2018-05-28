@@ -46,7 +46,7 @@ defmodule ContractorWeb.Resolvers.AccountsTest do
       assert Repo.aggregate(Person, :count, :id) == @num
       query = """
       query {
-        getPeople{
+        people{
           email
         }
       }
@@ -56,7 +56,7 @@ defmodule ContractorWeb.Resolvers.AccountsTest do
 
       %{
         "data" => %{
-          "getPeople" => people
+          "people" => people
         }
       } = json_response(res, 200)
 
@@ -69,7 +69,7 @@ defmodule ContractorWeb.Resolvers.AccountsTest do
       assert Repo.aggregate(Person, :count, :id) == 1
       query = """
       query {
-        getPerson(id: "#{person.id}"){
+        person(id: "#{person.id}"){
           id
           email
         }
@@ -80,7 +80,7 @@ defmodule ContractorWeb.Resolvers.AccountsTest do
 
       %{
         "data" => %{
-          "getPerson" => saved_person
+          "person" => saved_person
         }
       } = json_response(res, 200)
 
