@@ -26,7 +26,7 @@ defmodule Contractor.Contracts do
 
   @spec get_contract(String.t()) :: {:ok, Contract.t} | {:error, String.t()}
   def get_contract(id)do
-    with %Contract{} = contract <- Contract |> Repo.get(id) do
+    with %Contract{} = contract <- Contract |> Repo.get(id) |> Repo.preload([:person, :category, :vendor]) do
       {:ok, contract}
     else
       nil ->
@@ -40,7 +40,7 @@ defmodule Contractor.Contracts do
 
     query = from c in q, order_by: [asc: c.end_date]
 
-    with [_|_] = contracts <- Repo.all(query) do
+    with [_|_] = contracts <- Repo.all(query) |> Repo.preload([:person, :category, :vendor]) do
       {:ok, contracts}
     else
       [] ->
