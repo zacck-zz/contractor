@@ -33,8 +33,7 @@ type Page
 
 
 type Msg
-    = FetchPeople (Result Http.Error String)
-    | SetRoute Location
+    = SetRoute Location
     | NavigateTo Route.Route
     | SetEmail String
     | SetPassword String

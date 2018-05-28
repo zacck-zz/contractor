@@ -99,14 +99,6 @@ setRoute location model =
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
    case msg of
-     FetchPeople response ->
-       case response of
-         Ok result ->
-             ({ model | response = result }, Cmd.none)
-
-         Err err ->
-           ({ model | response = toString err }, Cmd.none)
-
      SetRoute location ->
          ( setRoute location model)
      NavigateTo route ->
@@ -134,7 +126,6 @@ update msg model =
 
          Err err ->
            ({ model | errors = [ toString err ]}, Cmd.none)
-
      ReceivePeopleResponse response ->
        let
            people =
