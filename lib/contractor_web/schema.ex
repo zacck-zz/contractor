@@ -78,7 +78,6 @@ defmodule ContractorWeb.Schema do
 
     @desc "fetches user contracts"
     field :contracts, list_of(:contract) do
-      arg :id, :id
       middleware Middleware.Authorize, :any
       resolve &Resolvers.Contracts.get_user_contracts/3
     end

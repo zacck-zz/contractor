@@ -25,9 +25,9 @@ defmodule ContractorWeb.Resolvers.Contracts do
       end
   end
 
-  @spec get_user_contracts(any(), map, any()) :: {:ok, list(Contract.t)} | {:error, String.t()}
-  def get_user_contracts(_, args, _) do
-    with {:ok, %Person{} = person} <- Accounts.get_person(args.id),
+  @spec get_user_contracts(any(), any(), map) :: {:ok, list(Contract.t)} | {:error, String.t()}
+  def get_user_contracts(_, _, %{context: context}) do
+    with {:ok, %Person{} = person} <- Accounts.get_person(context.current_user.id),
       {:ok, contracts} <- Contracts.get_user_contracts(person) do
         {:ok, contracts}
       end
