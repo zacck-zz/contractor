@@ -5,7 +5,7 @@ import Navigation exposing (Location)
 
 type alias Model = 
     { response : String
-    , token : String
+    , token : Maybe String
     , page : Page  
     }
 
