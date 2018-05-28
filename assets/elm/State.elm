@@ -130,7 +130,7 @@ update msg model =
      ReceiveRegistrationResponse response ->
        case response of
          Ok result ->
-           ({ model | registration = Just result}, Cmd.none)
+           ({ model | registration = Just result}, (Navigation.newUrl <| toPath Route.SignIn))
 
          Err err ->
            ({ model | errors = [ toString err ]}, Cmd.none)
