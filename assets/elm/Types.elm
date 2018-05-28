@@ -43,6 +43,8 @@ type Msg
     | ReceiveRegistrationResponse RegistrationResponse
     | ReceivePeopleResponse PeopleResponse
     | GetPeople
+    | SubmitSignIn
+    | ReceiveSessionResponse SessionResponse
 
 
 
@@ -65,6 +67,22 @@ type alias SignUpDetails =
   , email :  String
   , hash : String
   }
+
+
+type alias Session =
+  { token : String
+  }
+
+type alias LoginDetails =
+  { email : String
+  , password : String
+  }
+
+type alias LoginInput =
+  { input : LoginDetails }
+
+type alias SessionResponse =
+  Result GraphQLClient.Error Session
 
 type alias Registration =
   { id : String }
