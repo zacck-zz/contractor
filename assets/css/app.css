@@ -5,6 +5,11 @@
   align-items: center;
 }
 
+.label {
+  display: flex;
+  flex-direction: column;
+}
+
 .home-box {
   display: flex;
   align-items: center;
@@ -37,8 +42,9 @@ button:hover {
   opacity: 0.75;
 }
 
-input[type="text"] {
+input {
   padding: 6px 10px;
+  margin-bottom: .5rem;
   font-size: 1.15em;
   box-sizing: border-box;
   display: inline-block;
