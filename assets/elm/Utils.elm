@@ -1,7 +1,7 @@
 module Utils exposing (..)
 
 import Types exposing(Person)
-import Validate exposing (Validator, ifBlank, ifInvalidEmail, ifFalse, validate)
+import Validate exposing (Validator, ifBlank, ifInvalidEmail, ifFalse, ifTrue, validate)
 import Types exposing(Model)
 import GraphQL.Client.Http as GraphQLClient
 import GraphQL.Request.Builder exposing (..)
@@ -19,7 +19,10 @@ signUpValidator =
           [ ifBlank .email "Please enter an email address"
           , ifInvalidEmail .email (\_ -> "Please enter a valid email address")
           ]
-      , ifBlank .password "Please enter a password"
+      , Validate.firstError
+          [ ifTrue (\model -> String.length model.password < 8) "Password need to be atleast 8 characters"
+          , ifBlank .password "Please enter a password"
+          ]
       , ifBlank .passwordconf "Please enter a Password Confirmation"
       , ifFalse (\model -> model.password == model.passwordconf) "Password must match Password Confirmation"
       ]
