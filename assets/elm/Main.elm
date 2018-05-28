@@ -25,6 +25,10 @@ initialModel =
     { response = "Waiting for a response ..."
     , token = Nothing
     , page = Home
+    , name = ""
+    , email = ""
+    , password = ""
+    , passwordconf = ""
     }
 
 init : Location -> (Model, Cmd Msg)

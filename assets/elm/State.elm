@@ -46,6 +46,7 @@ setRoute location model =
             Route.UpdateContract ->
                 ({ model | page = UpdateContract }, Cmd.none)
 
+
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
    case msg of
@@ -62,3 +63,11 @@ update msg model =
 
      NavigateTo route ->
        (model , (Navigation.newUrl <| toPath route))
+     SetEmail email ->
+       ({ model | email = email}, Cmd.none)
+     SetPassword password ->
+       ({ model | password = password }, Cmd.none)
+     SetPasswordConf passwordconf ->
+       ({ model | passwordconf = passwordconf}, Cmd.none)
+     SetName name ->
+       ({ model | name = name }, Cmd.none)

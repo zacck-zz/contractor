@@ -8,6 +8,10 @@ type alias Model =
     { response : String
     , token : Maybe String
     , page : Page
+    , name : String
+    , email : String
+    , password : String
+    , passwordconf : String
     }
 
 
@@ -26,6 +30,10 @@ type Msg
     = FetchPeople (Result Http.Error String)
     | SetRoute Location
     | NavigateTo Route.Route
+    | SetEmail String
+    | SetPassword String
+    | SetPasswordConf String
+    | SetName String 
 
 
 type alias Person =
