@@ -1,6 +1,6 @@
 module View exposing (..)
 
-import Html exposing(Html, text, div, button)
+import Html exposing(Html, text, div, a, button)
 import Types exposing(Model, Msg(..), Page(..))
 import Html.Events exposing(onClick)
 import Html.Attributes exposing(..)
@@ -48,4 +48,7 @@ homeView model =
                 ]
 
         Just token ->
-            div [] [ text "Logged In" ]
+            div []
+                [ a [ onClick <| NavigateTo Route.Contracts ]
+                    [ text "Go to Contracts"]
+                ]
