@@ -2,32 +2,34 @@
 module Types exposing (..)
 import Http
 import Navigation exposing (Location)
+import Route
 
-type alias Model = 
+type alias Model =
     { response : String
     , token : Maybe String
-    , page : Page  
+    , page : Page
     }
 
 
-type Page 
-   = Home 
-   | Contracts 
-   | ContractDetails 
+type Page
+   = Home
+   | Contracts
+   | ContractDetails
    | SignIn
    | SignUp
-   | AddContract 
-   | UpdateContract 
+   | AddContract
+   | UpdateContract
 
 
 
 type Msg
     = FetchPeople (Result Http.Error String)
-    | SetRoute Location 
+    | SetRoute Location
+    | NavigateTo Route.Route
 
 
-type alias Person =  
+type alias Person =
     { id : String
-    , name : String 
-    , email : String 
+    , name : String
+    , email : String
     }
