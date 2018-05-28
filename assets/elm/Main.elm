@@ -29,6 +29,8 @@ initialModel =
     , password = ""
     , passwordconf = ""
     , errors = []
+    , registration = Nothing
+    , people = []
     }
 
 init : Location -> (Model, Cmd Msg)
