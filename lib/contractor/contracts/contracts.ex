@@ -79,7 +79,7 @@ defmodule Contractor.Contracts do
 
   @spec get_vendors() :: {:ok, list(Vendor.t)} | {:error, String.t()}
   def get_vendors() do
-    with [_|_] = vendors <- Vendor |> Repo.all() do
+    with [_|_] = vendors <- Vendor |> Repo.all() |> Repo.preload([:categories]) do
       {:ok, vendors}
     else
       [] ->

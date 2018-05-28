@@ -15,6 +15,7 @@ defmodule ContractorWeb.Schema.ContractTypes do
   object :vendor do
     field :id, :string
     field :name, :string
+    field :categories, list_of(:category)
   end
 
   @desc "A Contract Category"
