@@ -3,6 +3,8 @@ module Types exposing (..)
 import Http
 import Navigation exposing (Location)
 import Route
+import GraphQL.Client.Http as GraphQLClient
+
 
 type alias Model =
     { response : String
@@ -13,6 +15,8 @@ type alias Model =
     , password : String
     , passwordconf : String
     , errors : List String
+    , registration : Maybe Registration
+    , people : List Person
     }
 
 
@@ -37,6 +41,9 @@ type Msg
     | SetPasswordConf String
     | SetName String
     | SubmitSignUp
+    | ReceiveRegistrationResponse RegistrationResponse
+    | ReceivePeopleResponse PeopleResponse
+    | GetPeople
 
 
 
@@ -46,11 +53,22 @@ type alias Person =
     , email : String
     }
 
+
+
+type alias PeopleResponse =
+  Result GraphQLClient.Error (List Person)
+
 type alias SignUpInput =
-  { email : String
+  { input: SignUpDetails }
+
+type alias SignUpDetails =
+  { name : String
+  , email :  String
   , hash : String
-  , name : String
   }
 
-type alias SignUpResponse =
+type alias Registration =
   { id : String }
+
+type alias RegistrationResponse =
+  Result GraphQLClient.Error Registration
