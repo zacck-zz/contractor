@@ -17,6 +17,7 @@ type alias Model =
     , errors : List String
     , registration : Maybe Registration
     , people : List Person
+    , contracts : List Contract
     }
 
 
@@ -45,6 +46,8 @@ type Msg
     | GetPeople
     | SubmitSignIn
     | ReceiveSessionResponse SessionResponse
+    | ReceiveContractsResponse ContractsResponse
+    | FetchContracts 
 
 
 
@@ -80,6 +83,25 @@ type alias LoginDetails =
 
 type alias LoginInput =
   { input : LoginDetails }
+
+type alias Contract =
+  { id : String
+  , cost : Float
+  , endDate : String
+  }
+
+type alias ContractsResponse =
+  Result GraphQLClient.Error (List Contract)
+
+type alias Category =
+  { id : String
+  , name: String
+  }
+
+type alias Vendor =
+  { id : String
+  , name : String
+  }
 
 type alias SessionResponse =
   Result GraphQLClient.Error Session
