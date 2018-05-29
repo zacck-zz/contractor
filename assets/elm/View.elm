@@ -122,7 +122,7 @@ contractsView contractList =
         [ div []
               [ div [ class "contract-header"]
                     [ p [ class "page-title"] [ text "My Contracts"]
-                    , button [][text "ADD CONTRACT"]]
+                    , button [onClick (NavigateTo Route.AddContract)][text "ADD CONTRACT"]]
               ]
         , div [ class "contracts-list"] [list]
         ]
@@ -132,7 +132,7 @@ contractsView contractList =
 
 contractsRow : Contract -> Html Msg
 contractsRow contract =
-    div [ class "contract-item"]
+    div [ class "contract-item", onClick (OpenContract contract.id)]
         [ div [ class "contract-column"]
               [ p [ class "title"] [ text "Vendor"]
               , p [ class "value"] [ text contract.vendor.name]
