@@ -35,8 +35,8 @@ body {
   margin-right: 2rem;
 }
 
-.contract-column {
-
+.contracts-list {
+  overflow-x: scroll;
 }
 
 .page-title {
