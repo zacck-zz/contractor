@@ -21,7 +21,11 @@ view model =
             div [] [ (contractsView model.contracts) ]
 
         ContractDetails ->
-            div [] [ (contractDetailsView model) ]
+            div []
+                [ div [ class "contract-header"]
+                      [ p [ class "page-title"] [text "Contract Details"]]
+                ,(contractDetailsView model)
+                ]
 
         SignIn ->
             div [] [ (loginView model) ]
@@ -139,7 +143,7 @@ contractDetailsView model =
     in
         case activeContracts of
           [] ->
-            div [ class "app-box"] [text ("Contract with id: " ++ activeId ++ " does not exisit")]
+            div [ class "contract-header"] [text ("Contract with id: " ++ activeId ++ " does not exisit")]
           x::xs ->
             div [ class "app-box"] [(contractView x)]
 
