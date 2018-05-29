@@ -8,7 +8,7 @@ import State exposing(setRoute)
 import Route
 import String
 import Select
-import Utils exposing(selectConfig)
+import Utils exposing(vendorConfig, categoryConfig)
 
 
 
@@ -93,8 +93,8 @@ signUpView model =
 
 
 
-selectField : Model -> Html Msg
-selectField model =
+selectVendor : Model -> Html Msg
+selectVendor model =
     let
         selectedVendor =
           case model.selectedVendorId of
@@ -109,9 +109,26 @@ selectField model =
     in
         div []
             [ label [] [ text "Available Vendors"]
-            , Html.map SelectMsg (Select.view selectConfig model.vendorSelectState model.availableVendors selectedVendor)
+            , Html.map SelectVendor (Select.view vendorConfig model.vendorSelectState model.availableVendors selectedVendor)
             ]
 
+
+selectCategory : Model -> Html Msg
+selectCategory model =
+    let
+        selectedCategory =
+          case model.selectedCategoryId of
+              Just id ->
+                List.filter (\category -> category.id == id) model.availableCategories
+                  |> List.head
+
+              Nothing ->
+                  Nothing
+    in
+      div []
+          [ label [] [text "Available Categories"]
+          , Html.map SelectCategory (Select.view categoryConfig model.categorySelectState model.availableCategories selectedCategory)
+          ]
 
 
 saveContractView : Model -> Html Msg
@@ -119,11 +136,8 @@ saveContractView model =
     div [ class "app-box" ]
         [ div [ class "home-box" ]
               [ div [] [(formErrors model.errors)]
-              , (selectField model)
-              , label [ class "label"]
-                [ text "Category"
-                , input [ type_ "text", placeholder "Select a Category", value model.email ] []
-                ]
+              , (selectVendor model)
+              , (selectCategory model)
               , label [ class "label"]
                 [ text "Costs"
                 , input [ type_ "text", onInput SetCosts, value model.password ] []
