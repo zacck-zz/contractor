@@ -8,6 +8,13 @@ import Http
 import Task exposing(Task)
 import Select
 
+
+--lowest allowed contract cost
+leastContractCost : Float
+leastContractCost =
+    0.0
+
+
 -- query if the string is long enpough
 transformQuery : String -> Maybe String
 transformQuery query =
@@ -91,6 +98,22 @@ authvalidator =
     Validate.all
       [ ifBlank .token "Please Login to View Contracts"]
 
+-- addContractValidator Validate model When posting a contract
+addContractValidator : Validator String Model
+addContractValidator =
+    Validate.all
+      [ ifTrue (\model -> model.loggedId == Nothing ) "Please Login before creating a Contract"
+      , ifBlank .contractCategory "Please Select a Category"
+      , ifBlank .contractVendor "Please Select a Vendor"
+      , ifFalse (\model -> model.contractCost > leastContractCost) "Please Enter a Cost"
+      , ifBlank .endsDate "Please Enter an End Date"
+      ]
+
+
+-- validateContract
+validateContract : Model -> List String
+validateContract model =
+    validate addContractValidator model
 
 --validateAuth : Model -> List String
 validateAuth : Model -> List String
