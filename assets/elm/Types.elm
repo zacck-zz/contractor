@@ -47,7 +47,7 @@ type Msg
     | SubmitSignIn
     | ReceiveSessionResponse SessionResponse
     | ReceiveContractsResponse ContractsResponse
-    | FetchContracts 
+    | FetchContracts
 
 
 
@@ -88,6 +88,8 @@ type alias Contract =
   { id : String
   , cost : Float
   , endDate : String
+  , category : Category
+  , vendor : Vendor
   }
 
 type alias ContractsResponse =
