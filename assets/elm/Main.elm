@@ -32,6 +32,7 @@ initialModel =
     , registration = Nothing
     , people = []
     , contracts = []
+    , activeContract = ""
     }
 
 init : Location -> (Model, Cmd Msg)
