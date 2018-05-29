@@ -252,3 +252,5 @@ update msg model =
             (model, (sendContractsRequest model))
           errors ->
             ({ model | errors = errors }, (Navigation.newUrl <| toPath Route.SignIn))
+     OpenContract id ->
+        ({ model | activeContract = id }, (Navigation.newUrl <| toPath Route.ContractDetails))
