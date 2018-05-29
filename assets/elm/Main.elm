@@ -38,6 +38,9 @@ initialModel =
     , selectedVendorId = Nothing
     , vendorSelectState = Select.newState ""
     , availableVendors = []
+    , selectedCategoryId = Nothing
+    , categorySelectState = Select.newState ""
+    , availableCategories = []
     }
 
 init : Location -> (Model, Cmd Msg)
