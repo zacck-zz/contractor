@@ -1,8 +1,8 @@
 module State exposing(..)
 
 import Types exposing (Model, Msg(..), Page(..), SignUpInput)
-import Types exposing ( Registration, RegistrationResponse, Person, SignUpDetails, PeopleResponse, LoginInput, LoginDetails, Session, Category, Vendor, Contract)
-import Utils exposing (validateSignUp, validateAuth, validateSignIn, sendAuthedMutation, sendAuthedQuery)
+import Types exposing ( Registration, RegistrationResponse, Person, SignUpDetails, PeopleResponse, LoginInput, LoginDetails, Session, Category, PlainVendor, LoadedVendor, Contract)
+import Utils exposing (validateSignUp, validateAuth, validateSignIn, sendAuthedMutation, sendAuthedQuery, selectConfig)
 import Navigation exposing (Location)
 import UrlParser
 import Route exposing (toPath)
@@ -10,6 +10,7 @@ import GraphQL.Request.Builder exposing (..)
 import GraphQL.Request.Builder.Arg as Arg
 import GraphQL.Request.Builder.Variable as Var
 import Task exposing (Task)
+import Select
 
 
 
@@ -74,7 +75,7 @@ contractsQuery =
           |> with (field "name" [] string)
 
     vendor =
-      object Vendor
+      object PlainVendor
           |> with (field "id" [] string)
           |> with (field "name" [] string)
 
@@ -95,6 +96,30 @@ contractsQuery =
       |> queryDocument
       |> request
             {}
+
+
+vendorsQuery : Request Query (List LoadedVendor)
+vendorsQuery =
+    let
+        category =
+          object Category
+              |> with (field "id" [] string)
+              |> with (field "name" [] string)
+    in
+      extract
+        (field "vendors"
+          []
+          (list
+              (object LoadedVendor
+                    |> with (field "id" [] string)
+                    |> with (field "name" [] string)
+                    |> with (field "categories" [] (list category))
+              )
+          )
+        )
+        |> queryDocument
+        |> request
+              {}
 
 
 -- query for people
@@ -143,6 +168,12 @@ sendContractsRequest model =
     sendAuthedQuery model contractsQuery
       |> Task.attempt ReceiveContractsResponse
 
+-- available vendots request
+sendVendorsRequest : Model -> Cmd Msg
+sendVendorsRequest model =
+    sendAuthedQuery model vendorsQuery
+      |> Task.attempt ReceiveVendorsResponse
+
 
 
 
@@ -175,7 +206,15 @@ setRoute location model =
             Route.SignUp ->
                 ({ model | page = SignUp }, Cmd.none)
             Route.AddContract ->
-                ({ model | page = AddContract }, Cmd.none)
+              let
+                  cmd =
+                    case validateAuth model of
+                      [] ->
+                         (sendVendorsRequest model)
+                      errors ->
+                        (Navigation.newUrl <| toPath Route.SignIn)
+              in
+                ({ model | page = AddContract }, cmd)
             Route.UpdateContract ->
                 ({ model | page = UpdateContract }, Cmd.none)
 
@@ -254,3 +293,30 @@ update msg model =
             ({ model | errors = errors }, (Navigation.newUrl <| toPath Route.SignIn))
      OpenContract id ->
         ({ model | activeContract = id }, (Navigation.newUrl <| toPath Route.ContractDetails))
+     SetCosts cost ->
+        (model, Cmd.none)
+     SetEnds ends ->
+       (model, Cmd.none)
+     SaveContract ->
+       (model, Cmd.none)
+     OnVendorSelect maybeLoadedVendor ->
+       let
+           vendorId =
+             Maybe.map .id maybeLoadedVendor
+       in
+       ({ model | selectedVendorId = vendorId}, Cmd.none)
+     VendorQuery  query ->
+       (model, (sendVendorsRequest model))
+     ReceiveVendorsResponse response ->
+       case response of
+         Ok result ->
+           ({ model | availableVendors = result }, Cmd.none)
+
+         Err err ->
+           ( { model | errors = [toString err]}, Cmd.none)
+     SelectMsg subMsg ->
+       let
+           (updated, cmd) =
+             Select.update selectConfig subMsg model.vendorSelectState
+       in
+          ({ model | vendorSelectState = updated}, cmd)
