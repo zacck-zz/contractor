@@ -41,6 +41,20 @@ signInValidator =
         ]
     ]
 
+
+-- authvalidator : Validator String Model
+authvalidator : Validator String Model
+authvalidator =
+    Validate.all
+      [ ifBlank .token "Please Login to View Contracts"]
+
+
+--validateAuth : Model -> List String
+validateAuth : Model -> List String
+validateAuth model =
+    validate authvalidator model
+
+    
 validateSignIn : Model -> List String
 validateSignIn model =
     validate signInValidator model
