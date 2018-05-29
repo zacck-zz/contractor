@@ -31,8 +31,7 @@ initialModel =
     , errors = []
     , registration = Nothing
     , people = []
-    , contracts = [Contract "r64r6r5t676t6t" 690.23 "2018-12-05"
-                  , Contract "gy6yf6u7uyghug" 873.98 "2018-11-05" ]
+    , contracts = []
     }
 
 init : Location -> (Model, Cmd Msg)
