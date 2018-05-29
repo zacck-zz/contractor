@@ -1,7 +1,7 @@
 module State exposing(..)
 
-import Types exposing (Model, Msg(..), Page(..), SignUpInput, Registration, RegistrationResponse, Person, SignUpDetails, PeopleResponse, LoginInput, LoginDetails,Session)
-import Utils exposing (validateSignUp, validateSignIn, sendAuthedMutation, sendAuthedQuery)
+import Types exposing (Model, Msg(..), Page(..), SignUpInput, Registration, RegistrationResponse, Person, SignUpDetails, PeopleResponse, LoginInput, LoginDetails, Session, Contract)
+import Utils exposing (validateSignUp, validateAuth, validateSignIn, sendAuthedMutation, sendAuthedQuery)
 import Navigation exposing (Location)
 import UrlParser
 import Route exposing (toPath)
@@ -63,8 +63,26 @@ loginMutation loginInput =
               { input = loginInput.input }
 
 
+-- query for a users contracts
+contractsQuery : Request Query (List Contract)
+contractsQuery =
+    extract
+      (field "contracts"
+          []
+          (list
+              (object Contract
+                    |> with (field "id" [] string)
+                    |> with (field "cost" [] float)
+                    |> with (field "endDate" [] string)
+              )
+          )
+      )
+      |> queryDocument
+      |> request
+            {}
 
 
+-- query for people
 peopleQuery : Request Query (List Person)
 peopleQuery =
     extract
@@ -104,6 +122,12 @@ sendPeopleRequest model =
     sendAuthedQuery model peopleQuery
       |> Task.attempt ReceivePeopleResponse
 
+-- contracts request
+sendContractsRequest : Model -> Cmd Msg
+sendContractsRequest model =
+    sendAuthedQuery model contractsQuery
+      |> Task.attempt ReceiveContractsResponse
+
 
 
 
@@ -120,7 +144,15 @@ setRoute location model =
             Route.Home ->
                 ({ model | page = Home }, Cmd.none)
             Route.Contracts ->
-                ({ model | page = Contracts }, Cmd.none)
+                let
+                    cmd =
+                      case validateAuth model of
+                        [] ->
+                           (sendContractsRequest model)
+                        errors ->
+                          (Navigation.newUrl <| toPath Route.SignIn)
+                in
+                ({ model | page = Contracts }, cmd)
             Route.ContractDetails ->
                 ({ model | page = ContractDetails }, Cmd.none)
             Route.SignIn ->
@@ -156,6 +188,7 @@ update msg model =
            ({ model | errors = errors}, Cmd.none)
      GetPeople ->
        (model, (sendPeopleRequest model))
+
      ReceiveRegistrationResponse response ->
        case response of
          Ok result ->
@@ -190,3 +223,17 @@ update msg model =
 
         Err err ->
           ({ model | errors = [toString err] }, Cmd.none)
+     ReceiveContractsResponse response ->
+      case response of
+        Ok result ->
+          ({ model | contracts = result }, Cmd.none)
+
+        Err err ->
+          ({ model | errors = [toString err]}, Cmd.none)
+
+     FetchContracts ->
+        case validateAuth model of
+          [] ->
+            (model, (sendContractsRequest model))
+          errors ->
+            ({ model | errors = errors }, (Navigation.newUrl <| toPath Route.SignIn))
