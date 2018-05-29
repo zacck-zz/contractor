@@ -1,7 +1,7 @@
 module View exposing (..)
 
-import Html exposing(Html, text, div, a, button, input, label, li, ul)
-import Types exposing(Model, Msg(..), Page(..))
+import Html exposing(Html, text, div, a, button, input, label, li, ul, p)
+import Types exposing(Model, Msg(..), Page(..), Contract)
 import Html.Events exposing(onClick, onInput)
 import Html.Attributes exposing(..)
 import State exposing(setRoute)
@@ -18,7 +18,7 @@ view model =
             div [] [ (homeView model) ]
 
         Contracts ->
-            div [] [ text "Contracts" ]
+            div [] [ (contractsView model.contracts) ]
 
         ContractDetails ->
             div [] [ text "ContractDetails" ]
@@ -103,4 +103,49 @@ loginView model =
           [ text "Password"
           , input [ type_ "password", onInput SetPassword, value model.password ] []
           ]
-        , button [ onClick SubmitSignIn ] [ text "SIGN IN"] ]
+        , button [ onClick SubmitSignIn ] [ text "SIGN IN"]
+        ]
+
+contractsView : List Contract -> Html Msg
+contractsView contractList =
+  let
+      list =
+        case contractList of
+          [] ->
+            div []
+                [ text "No contracts to show at the Moment"]
+          contracts ->
+            div []
+                (List.map contractsRow contractList)
+  in
+    div [ class "app-box"]
+        [ div []
+              [ div [ class "contract-header"]
+                    [ p [ class "page-title"] [ text "My Contracts"]
+                    , button [][text "ADD CONTRACT"]]
+              ]
+        , div [] [list]]
+
+
+
+
+contractsRow : Contract -> Html Msg
+contractsRow contract =
+    div [ class "contract-item"]
+        [ div [ class "contract-column"]
+              [ p [ class "title"] [ text "Vendor"]
+              , p [ class "value"] [ text "-"]
+              ]
+        , div [ class "contract-column"]
+              [ p [ class "title"] [ text "Category"]
+              , p [ class "value"] [ text "-"]
+              ]
+        , div [ class "contract-column"]
+              [ p [ class "title"] [ text "Costs"]
+              , p [ class "value"] [ text ("$ " ++ (toString contract.cost))]
+              ]
+        , div [ class "contract-column"]
+              [ p [ class "title"] [ text "Ends On"]
+              , p [ class "value"] [ text contract.endDate]
+              ]
+        ]
