@@ -4,6 +4,7 @@ import Http
 import Navigation exposing (Location)
 import Route
 import GraphQL.Client.Http as GraphQLClient
+import Select
 
 
 type alias Model =
@@ -19,6 +20,10 @@ type alias Model =
     , people : List Person
     , contracts : List Contract
     , activeContract : String
+    , newContract : Maybe Contract
+    , vendorSelectState : Select.State
+    , selectedVendorId : Maybe String
+    , availableVendors : List LoadedVendor
     }
 
 
@@ -50,6 +55,13 @@ type Msg
     | ReceiveContractsResponse ContractsResponse
     | FetchContracts
     | OpenContract String
+    | SaveContract
+    | SetCosts String
+    | SetEnds String
+    | OnVendorSelect (Maybe LoadedVendor)
+    | VendorQuery String
+    | ReceiveVendorsResponse LoadedVendorResponse
+    | SelectMsg (Select.Msg LoadedVendor)
 
 
 
@@ -88,7 +100,7 @@ type alias Contract =
   , cost : Float
   , endDate : String
   , category : Category
-  , vendor : Vendor
+  , vendor : PlainVendor
   }
 
 type alias ContractsResponse =
@@ -99,10 +111,23 @@ type alias Category =
   , name: String
   }
 
-type alias Vendor =
+type alias LoadedVendor =
+  { id : String
+  , name : String
+  , categories : List Category
+  }
+
+type alias PlainVendor =
   { id : String
   , name : String
   }
+
+
+type alias LoadedVendorResponse =
+ Result GraphQLClient.Error (List LoadedVendor)
+
+type alias PlainVendorResponse =
+  Result GraphQLClient.Error (List PlainVendor)
 
 type alias SessionResponse =
   Result GraphQLClient.Error Session
