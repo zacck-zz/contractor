@@ -1,7 +1,7 @@
 module State exposing(..)
 
 import Types exposing (Model, Msg(..), Page(..), SignUpInput)
-import Types exposing ( Registration, RegistrationResponse, Person, SignUpDetails, PeopleResponse, LoginInput, LoginDetails, Session, Contract, Category, Vendor)
+import Types exposing ( Registration, RegistrationResponse, Person, SignUpDetails, PeopleResponse, LoginInput, LoginDetails, Session, Category, Vendor, Contract)
 import Utils exposing (validateSignUp, validateAuth, validateSignIn, sendAuthedMutation, sendAuthedQuery)
 import Navigation exposing (Location)
 import UrlParser
