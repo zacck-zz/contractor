@@ -1,8 +1,8 @@
 module State exposing(..)
 
-import Types exposing (Model, Msg(..), Page(..), SignUpInput)
-import Types exposing ( Registration, RegistrationResponse, Person, SignUpDetails, PeopleResponse, LoginInput, CategoriesInput, LoginDetails, Session, Category, PlainVendor, LoadedVendor, Contract)
-import Utils exposing (validateSignUp, validateAuth, validateSignIn, sendAuthedMutation, sendAuthedQuery, vendorConfig, categoryConfig)
+import Types exposing (Model, Msg(..), Page(..), SignUpInput,  Registration, RegistrationResponse, Person, SignUpDetails,PeopleResponse, LoginInput)
+import Types exposing (CategoriesInput, LoginDetails, Session, Category, PlainVendor, LoadedVendor, Contract, ContractResult, ContractInput, ContractInputDetails)
+import Utils exposing (validateSignUp, validateAuth, validateSignIn, sendAuthedMutation, sendAuthedQuery, vendorConfig, categoryConfig, validateContract)
 import Navigation exposing (Location)
 import UrlParser
 import Route exposing (toPath)
@@ -40,6 +40,36 @@ addUserMutation signUpInput =
                 { input =  signUpInput.input }
 
 
+-- addContract Mutation
+addContractMutation : ContractInput -> Request Mutation ContractResult
+addContractMutation contractInput =
+    let
+        inputVar =
+          Var.required "input"
+              .input
+              (Var.object "ContractInput"
+                  [ Var.field "person_id" .person_id Var.string
+                  , Var.field "vendor_id" .vendor_id Var.string
+                  , Var.field "end_date" .end_date Var.string
+                  , Var.field "cost" .cost Var.float
+                  , Var.field "category_id" .category_id Var.string
+                  ]
+              )
+    in
+       extract
+          (field "addUserContract"
+            [("input", Arg.variable inputVar)]
+            (object ContractResult
+                  |> with (field "id" [] string)
+                  |> with (field "endDate" [] string)
+                  |> with (field "cost" [] float)
+            )
+          )
+          |> mutationDocument
+          |> request
+              { input = contractInput.input }
+
+
 -- login Mutation
 loginMutation : LoginInput -> Request Mutation Session
 loginMutation loginInput =
@@ -52,12 +82,20 @@ loginMutation loginInput =
                   , Var.field "email" .email Var.string
                   ]
               )
+
+        person =
+          object Person
+            |> with (field "id" [] string)
+            |> with (field "name" [] string)
+            |> with (field "email" [] string)
+
     in
       extract
         (field "login"
           [("input", Arg.variable inputVar)]
           (object Session
                 |> with (field "token" [] string)
+                |> with (field "person" [] person)
           )
         )
         |> mutationDocument
@@ -178,6 +216,11 @@ sendSignUpRequest signUpInput model =
     sendAuthedMutation model (addUserMutation signUpInput)
           |> Task.attempt ReceiveRegistrationResponse
 
+-- send add contract request
+sendAddContractRequest : ContractInput -> Model -> Cmd Msg
+sendAddContractRequest contractInput model =
+    sendAuthedMutation model (addContractMutation contractInput)
+          |> Task.attempt ReceiveAddContractResponse
 
 -- people request
 sendPeopleRequest : Model -> Cmd Msg
@@ -273,7 +316,7 @@ update msg model =
      ReceiveRegistrationResponse response ->
        case response of
          Ok result ->
-           ({ model | registration = Just result}, (Navigation.newUrl <| toPath Route.SignIn))
+           ({ model | loggedId = Just result.id }, (Navigation.newUrl <| toPath Route.SignIn))
 
          Err err ->
            ({ model | errors = [ toString err ]}, Cmd.none)
@@ -296,11 +339,10 @@ update msg model =
           (model, (sendSignInRequest { input = (LoginDetails model.email model.password)} model))
         errors ->
           ({ model | errors = errors}, Cmd.none)
-
      ReceiveSessionResponse response ->
       case response of
         Ok result ->
-          ( { model | token = result.token }, (Navigation.newUrl <| toPath Route.Contracts))
+          ( { model | token = result.token , loggedId = Just result.person.id }, (Navigation.newUrl <| toPath Route.Contracts))
 
         Err err ->
           ({ model | errors = [toString err] }, Cmd.none)
@@ -320,12 +362,18 @@ update msg model =
             ({ model | errors = errors }, (Navigation.newUrl <| toPath Route.SignIn))
      OpenContract id ->
         ({ model | activeContract = id }, (Navigation.newUrl <| toPath Route.ContractDetails))
-     SetCosts cost ->
-        (model, Cmd.none)
-     SetEnds ends ->
-       (model, Cmd.none)
-     SaveContract ->
-       (model, Cmd.none)
+     SetNewContractCost cost ->
+       let
+           newCost =
+             Result.withDefault 0 (String.toFloat cost)
+       in
+        ({ model | contractCost = newCost }, Cmd.none)
+     SetNewContractEnds ends ->
+       ( { model | endsDate = ends }, Cmd.none)
+     SetNewContractVendor vendorId ->
+       ( { model | contractVendor = vendorId }, Cmd.none)
+     SetNewContractCategory categoryId ->
+       ( { model | contractCategory = categoryId}, Cmd.none)
      OnVendorSelect maybeLoadedVendor ->
        let
            vendorId =
@@ -338,13 +386,34 @@ update msg model =
                Just id ->
                  id
        in
-       ({ model | selectedVendorId = vendorId}, (sendCategoriesRequest (CategoriesInput stringId) model))
+       ({ model | selectedVendorId = vendorId, contractVendor = stringId}, (sendCategoriesRequest (CategoriesInput stringId) model))
      OnCategorySelect maybeCategory ->
         let
             categoryId =
               Maybe.map .id maybeCategory
+
+            stringCatId =
+              case categoryId of
+                Nothing ->
+                  ""
+                Just id ->
+                  id
         in
-            ({ model | selectedCategoryId = categoryId }, Cmd.none)
+            ({ model | selectedCategoryId = categoryId, contractCategory = stringCatId}, Cmd.none)
+     SaveContract ->
+       let
+           personId =
+             case model.loggedId of
+               Nothing ->
+                 ""
+               Just id ->
+                   id
+       in
+         case validateContract model of
+           [] ->
+             (model, (sendAddContractRequest { input = (ContractInputDetails personId model.contractCategory model.contractVendor model.contractCost model.endsDate)} model))
+           errors ->
+             ( { model | errors = errors }, Cmd.none)
      VendorQuery  query ->
        (model, (sendVendorsRequest model))
      CategoryQuery query ->
@@ -375,8 +444,15 @@ update msg model =
        in
           ({ model | vendorSelectState = updated}, cmd)
      SelectCategory subMsg ->
-      let
-          (updated, cmd) =
-            Select.update categoryConfig subMsg model.categorySelectState
-      in
+       let
+            (updated, cmd) =
+              Select.update categoryConfig subMsg model.categorySelectState
+       in
           ({ model | categorySelectState = updated}, cmd)
+     ReceiveAddContractResponse resp ->
+       case resp of
+         Ok result ->
+           (model, (Navigation.newUrl <| toPath Route.Contracts))
+
+         Err err ->
+           ( { model | errors = [toString err]}, Cmd.none)
