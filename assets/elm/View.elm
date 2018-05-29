@@ -26,7 +26,7 @@ view model =
             div []
                 [ div [ class "contract-header"]
                       [ p [ class "page-title"] [text "Contract Details"]]
-                ,(contractDetailsView model)
+                , (contractDetailsView model)
                 ]
 
         SignIn ->
@@ -36,7 +36,11 @@ view model =
             div [] [ (signUpView model) ]
 
         AddContract ->
-            div [] [ (saveContractView model)]
+            div []
+                [ div [ class "contract-header"]
+                      [ p [ class "page-title"] [ text "Save Contract"]]
+                , (saveContractView model)
+                ]
 
         UpdateContract ->
             div [] [ text "Update Contract" ]
@@ -140,11 +144,11 @@ saveContractView model =
               , (selectCategory model)
               , label [ class "label"]
                 [ text "Costs"
-                , input [ type_ "text", onInput SetCosts, value model.password ] []
+                , input [ type_ "text", onInput SetNewContractCost] []
                 ]
               , label [ class "label"]
                 [ text "Ends On"
-                , input [ type_ "text", onInput SetEnds, value model.passwordconf] []
+                , input [ type_ "text", onInput SetNewContractEnds] []
                 ]
               , button [ onClick SaveContract ] [ text "Save"]
               ]
