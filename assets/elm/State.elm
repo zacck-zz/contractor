@@ -1,8 +1,8 @@
 module State exposing(..)
 
 import Types exposing (Model, Msg(..), Page(..), SignUpInput)
-import Types exposing ( Registration, RegistrationResponse, Person, SignUpDetails, PeopleResponse, LoginInput, LoginDetails, Session, Category, PlainVendor, LoadedVendor, Contract)
-import Utils exposing (validateSignUp, validateAuth, validateSignIn, sendAuthedMutation, sendAuthedQuery, selectConfig)
+import Types exposing ( Registration, RegistrationResponse, Person, SignUpDetails, PeopleResponse, LoginInput, CategoriesInput, LoginDetails, Session, Category, PlainVendor, LoadedVendor, Contract)
+import Utils exposing (validateSignUp, validateAuth, validateSignIn, sendAuthedMutation, sendAuthedQuery, vendorConfig, categoryConfig)
 import Navigation exposing (Location)
 import UrlParser
 import Route exposing (toPath)
@@ -11,7 +11,7 @@ import GraphQL.Request.Builder.Arg as Arg
 import GraphQL.Request.Builder.Variable as Var
 import Task exposing (Task)
 import Select
-
+import Debug
 
 
 -- addUser Mutation
@@ -97,7 +97,7 @@ contractsQuery =
       |> request
             {}
 
-
+-- query the vendors graph
 vendorsQuery : Request Query (List LoadedVendor)
 vendorsQuery =
     let
@@ -120,6 +120,29 @@ vendorsQuery =
         |> queryDocument
         |> request
               {}
+
+-- query categories end endpoint
+categoriesQuery : CategoriesInput -> Request Query (List Category)
+categoriesQuery categoriesInput =
+    let
+        inputVar =
+          Var.required "id" .id Var.id
+    in
+        extract
+          (field "categories"
+            [("id", Arg.variable inputVar)]
+            (list
+                (object Category
+                      |> with (field "id" [] string)
+                      |> with (field "name" [] string)
+                )
+            )
+          )
+          |> queryDocument
+          |> request
+                { id = categoriesInput.id }
+
+
 
 
 -- query for people
@@ -174,6 +197,11 @@ sendVendorsRequest model =
     sendAuthedQuery model vendorsQuery
       |> Task.attempt ReceiveVendorsResponse
 
+--send for available categories
+sendCategoriesRequest : CategoriesInput -> Model -> Cmd Msg
+sendCategoriesRequest categoriesInput model =
+    sendAuthedQuery model (categoriesQuery categoriesInput)
+      |> Task.attempt ReceiveCategoriesResponse
 
 
 
@@ -242,7 +270,6 @@ update msg model =
            ({ model | errors = errors}, Cmd.none)
      GetPeople ->
        (model, (sendPeopleRequest model))
-
      ReceiveRegistrationResponse response ->
        case response of
          Ok result ->
@@ -303,10 +330,37 @@ update msg model =
        let
            vendorId =
              Maybe.map .id maybeLoadedVendor
+
+           stringId =
+             case vendorId of
+               Nothing ->
+                 ""
+               Just id ->
+                 id
        in
-       ({ model | selectedVendorId = vendorId}, Cmd.none)
+       ({ model | selectedVendorId = vendorId}, (sendCategoriesRequest (CategoriesInput stringId) model))
+     OnCategorySelect maybeCategory ->
+        let
+            categoryId =
+              Maybe.map .id maybeCategory
+        in
+            ({ model | selectedCategoryId = categoryId }, Cmd.none)
      VendorQuery  query ->
        (model, (sendVendorsRequest model))
+     CategoryQuery query ->
+       case model.selectedVendorId of
+         Nothing ->
+           ({ model | errors = ["Please select a Vendor to load Categories"]}, Cmd.none)
+         Just id ->
+           ( model, (sendCategoriesRequest (CategoriesInput id) model))
+     ReceiveCategoriesResponse response ->
+       case response of
+         Ok result ->
+           ({ model | availableCategories = result}, Cmd.none)
+
+         Err err ->
+           ({ model | errors = [toString err]}, Cmd.none)
+
      ReceiveVendorsResponse response ->
        case response of
          Ok result ->
@@ -314,9 +368,15 @@ update msg model =
 
          Err err ->
            ( { model | errors = [toString err]}, Cmd.none)
-     SelectMsg subMsg ->
+     SelectVendor subMsg ->
        let
            (updated, cmd) =
-             Select.update selectConfig subMsg model.vendorSelectState
+             Select.update vendorConfig subMsg model.vendorSelectState
        in
           ({ model | vendorSelectState = updated}, cmd)
+     SelectCategory subMsg ->
+      let
+          (updated, cmd) =
+            Select.update categoryConfig subMsg model.categorySelectState
+      in
+          ({ model | categorySelectState = updated}, cmd)
