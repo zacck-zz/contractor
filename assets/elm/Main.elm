@@ -2,10 +2,11 @@ module Main exposing (..)
 
 import Html exposing(Html)
 import Http
-import Types exposing (Model, Msg(..), Page(..), Contract, Vendor, Category)
+import Types exposing (Model, Msg(..), Page(..))
 import State exposing (update, setRoute)
 import View exposing (view)
 import Navigation exposing (Location)
+import Select
 
 
 
@@ -33,6 +34,10 @@ initialModel =
     , people = []
     , contracts = []
     , activeContract = ""
+    , newContract = Nothing
+    , selectedVendorId = Nothing
+    , vendorSelectState = Select.newState ""
+    , availableVendors = []
     }
 
 init : Location -> (Model, Cmd Msg)

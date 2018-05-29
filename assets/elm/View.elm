@@ -108,9 +108,7 @@ selectField model =
 
     in
         div []
-            [ h3 [] [ text "Available Vendors"]
-            , text (toString model.selectedVendorId)
-            , h4 [] [ text "Pick a Vendor"]
+            [ label [] [ text "Available Vendors"]
             , Html.map SelectMsg (Select.view selectConfig model.vendorSelectState model.availableVendors selectedVendor)
             ]
 
