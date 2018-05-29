@@ -18,6 +18,7 @@ type alias Model =
     , registration : Maybe Registration
     , people : List Person
     , contracts : List Contract
+    , activeContract : String
     }
 
 
@@ -48,6 +49,7 @@ type Msg
     | ReceiveSessionResponse SessionResponse
     | ReceiveContractsResponse ContractsResponse
     | FetchContracts
+    | OpenContract String
 
 
 
