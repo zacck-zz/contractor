@@ -1,6 +1,6 @@
 module Utils exposing (..)
 
-import Types exposing(Person, Model,  Msg(..), LoadedVendor)
+import Types exposing(Person, Model,  Msg(..), LoadedVendor, Category)
 import Validate exposing (Validator, ifBlank, ifInvalidEmail, ifFalse, ifTrue, validate)
 import GraphQL.Client.Http as GraphQLClient
 import GraphQL.Request.Builder exposing (..)
@@ -18,8 +18,8 @@ transformQuery query =
 
 
 -- configure select box
-selectConfig : Select.Config Msg LoadedVendor
-selectConfig =
+vendorConfig : Select.Config Msg LoadedVendor
+vendorConfig =
     Select.newConfig OnVendorSelect .name
       |> Select.withCutoff 5
       |> Select.withMenuClass "border border-gray"
@@ -30,6 +30,23 @@ selectConfig =
       |> Select.withHighlightedItemClass "bg-silver"
       |> Select.withHighlightedItemStyles [ ( "color", "black" ) ]
       |> Select.withPrompt "Search for a Vendor .."
+      |> Select.withPromptClass "grey"
+      |> Select.withUnderlineClass "underline"
+      |> Select.withTransformQuery transformQuery
+
+-- configure select box
+categoryConfig : Select.Config Msg Category
+categoryConfig =
+    Select.newConfig OnCategorySelect .name
+      |> Select.withCutoff 5
+      |> Select.withMenuClass "border border-gray"
+      |> Select.withMenuStyles [ ( "background", "white" ) ]
+      |> Select.withNotFound "No matches"
+      |> Select.withNotFoundClass "red"
+      |> Select.withNotFoundStyles [ ( "padding", "0 2rem" ) ]
+      |> Select.withHighlightedItemClass "bg-silver"
+      |> Select.withHighlightedItemStyles [ ( "color", "black" ) ]
+      |> Select.withPrompt "Search for a Category"
       |> Select.withPromptClass "grey"
       |> Select.withUnderlineClass "underline"
       |> Select.withTransformQuery transformQuery
@@ -100,7 +117,7 @@ authedGraphRequest model =
   let
     headers = [Http.header "Authorization" ("Bearer " ++ model.token)]
   in
-    { method = "Post", headers = headers, url = graphUrl, timeout = Just 1000, withCredentials = False }
+    { method = "Post", headers = headers, url = graphUrl, timeout = Just 3000, withCredentials = False }
 
 
 sendAuthedQuery : Model -> Request Query a -> Task GraphQLClient.Error a
