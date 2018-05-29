@@ -1,12 +1,14 @@
 module View exposing (..)
 
-import Html exposing(Html, text, div, a, button, input, label, li, ul, p)
+import Html exposing(Html, text, div, a, button, input, label, li, ul, p, h4, h3)
 import Types exposing(Model, Msg(..), Page(..), Contract)
 import Html.Events exposing(onClick, onInput)
 import Html.Attributes exposing(..)
 import State exposing(setRoute)
 import Route
 import String
+import Select
+import Utils exposing(selectConfig)
 
 
 
@@ -34,7 +36,7 @@ view model =
             div [] [ (signUpView model) ]
 
         AddContract ->
-            div [] [ text "Add Contract" ]
+            div [] [ (saveContractView model)]
 
         UpdateContract ->
             div [] [ text "Update Contract" ]
@@ -84,6 +86,55 @@ signUpView model =
                 , input [ type_ "password", onInput SetPasswordConf, value model.passwordconf] []
                 ]
               , button [ onClick SubmitSignUp ] [ text "SIGN UP"]
+              ]
+        ]
+
+
+
+
+
+selectField : Model -> Html Msg
+selectField model =
+    let
+        selectedVendor =
+          case model.selectedVendorId of
+            Nothing->
+              Nothing
+
+            Just id ->
+               List.filter(\vendor -> vendor.id == id) model.availableVendors
+                  |> List.head
+
+
+    in
+        div []
+            [ h3 [] [ text "Available Vendors"]
+            , text (toString model.selectedVendorId)
+            , h4 [] [ text "Pick a Vendor"]
+            , Html.map SelectMsg (Select.view selectConfig model.vendorSelectState model.availableVendors selectedVendor)
+            ]
+
+
+
+saveContractView : Model -> Html Msg
+saveContractView model =
+    div [ class "app-box" ]
+        [ div [ class "home-box" ]
+              [ div [] [(formErrors model.errors)]
+              , (selectField model)
+              , label [ class "label"]
+                [ text "Category"
+                , input [ type_ "text", placeholder "Select a Category", value model.email ] []
+                ]
+              , label [ class "label"]
+                [ text "Costs"
+                , input [ type_ "text", onInput SetCosts, value model.password ] []
+                ]
+              , label [ class "label"]
+                [ text "Ends On"
+                , input [ type_ "text", onInput SetEnds, value model.passwordconf] []
+                ]
+              , button [ onClick SaveContract ] [ text "Save"]
               ]
         ]
 

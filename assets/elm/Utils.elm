@@ -1,13 +1,39 @@
 module Utils exposing (..)
 
-import Types exposing(Person)
+import Types exposing(Person, Model,  Msg(..), LoadedVendor)
 import Validate exposing (Validator, ifBlank, ifInvalidEmail, ifFalse, ifTrue, validate)
-import Types exposing(Model)
 import GraphQL.Client.Http as GraphQLClient
 import GraphQL.Request.Builder exposing (..)
-
 import Http
 import Task exposing(Task)
+import Select
+
+-- query if the string is long enpough
+transformQuery : String -> Maybe String
+transformQuery query =
+    if String.length query < 2 then
+      Nothing
+    else
+      Just query
+
+
+-- configure select box
+selectConfig : Select.Config Msg LoadedVendor
+selectConfig =
+    Select.newConfig OnVendorSelect .name
+      |> Select.withCutoff 5
+      |> Select.withMenuClass "border border-gray"
+      |> Select.withMenuStyles [ ( "background", "white" ) ]
+      |> Select.withNotFound "No matches"
+      |> Select.withNotFoundClass "red"
+      |> Select.withNotFoundStyles [ ( "padding", "0 2rem" ) ]
+      |> Select.withHighlightedItemClass "bg-silver"
+      |> Select.withHighlightedItemStyles [ ( "color", "black" ) ]
+      |> Select.withPrompt "Select a Vendor"
+      |> Select.withPromptClass "grey"
+      |> Select.withUnderlineClass "underline"
+      |> Select.withTransformQuery transformQuery
+
 
 
 -- validates a model for signups
@@ -54,7 +80,7 @@ validateAuth : Model -> List String
 validateAuth model =
     validate authvalidator model
 
-    
+
 validateSignIn : Model -> List String
 validateSignIn model =
     validate signInValidator model
