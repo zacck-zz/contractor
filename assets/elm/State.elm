@@ -1,6 +1,7 @@
 module State exposing(..)
 
-import Types exposing (Model, Msg(..), Page(..), SignUpInput, Registration, RegistrationResponse, Person, SignUpDetails, PeopleResponse, LoginInput, LoginDetails, Session, Contract)
+import Types exposing (Model, Msg(..), Page(..), SignUpInput)
+import Types exposing ( Registration, RegistrationResponse, Person, SignUpDetails, PeopleResponse, LoginInput, LoginDetails, Session, Contract, Category, Vendor)
 import Utils exposing (validateSignUp, validateAuth, validateSignIn, sendAuthedMutation, sendAuthedQuery)
 import Navigation exposing (Location)
 import UrlParser
@@ -66,6 +67,18 @@ loginMutation loginInput =
 -- query for a users contracts
 contractsQuery : Request Query (List Contract)
 contractsQuery =
+  let
+    category =
+      object Category
+          |> with (field "id" [] string)
+          |> with (field "name" [] string)
+
+    vendor =
+      object Vendor
+          |> with (field "id" [] string)
+          |> with (field "name" [] string)
+
+  in
     extract
       (field "contracts"
           []
@@ -74,6 +87,8 @@ contractsQuery =
                     |> with (field "id" [] string)
                     |> with (field "cost" [] float)
                     |> with (field "endDate" [] string)
+                    |> with (field "category" [] category)
+                    |> with (field "vendor" [] vendor)
               )
           )
       )
