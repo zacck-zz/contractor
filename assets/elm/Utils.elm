@@ -29,7 +29,7 @@ selectConfig =
       |> Select.withNotFoundStyles [ ( "padding", "0 2rem" ) ]
       |> Select.withHighlightedItemClass "bg-silver"
       |> Select.withHighlightedItemStyles [ ( "color", "black" ) ]
-      |> Select.withPrompt "Select a Vendor"
+      |> Select.withPrompt "Search for a Vendor .."
       |> Select.withPromptClass "grey"
       |> Select.withUnderlineClass "underline"
       |> Select.withTransformQuery transformQuery
