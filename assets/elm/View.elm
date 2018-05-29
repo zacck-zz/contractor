@@ -21,7 +21,7 @@ view model =
             div [] [ (contractsView model.contracts) ]
 
         ContractDetails ->
-            div [] [ text "ContractDetails" ]
+            div [] [ (contractDetailsView model) ]
 
         SignIn ->
             div [] [ (loginView model) ]
@@ -127,6 +127,47 @@ contractsView contractList =
         , div [ class "contracts-list"] [list]
         ]
 
+
+contractDetailsView : Model -> Html Msg
+contractDetailsView model =
+    let
+        activeId =
+          model.activeContract
+
+        activeContracts =
+          List.filter (\c -> c.id == activeId) model.contracts
+    in
+        case activeContracts of
+          [] ->
+            div [ class "app-box"] [text ("Contract with id: " ++ activeId ++ " does not exisit")]
+          x::xs ->
+            div [ class "app-box"] [(contractView x)]
+
+
+contractView : Contract -> Html Msg
+contractView contract =
+    div [ class "contract-page"]
+        [ div [ class "contract-column"]
+              [ p [ class "title"] [ text "Vendor"]
+              , p [ class "value"] [ text contract.vendor.name]
+              ]
+        , div [ class "contract-column"]
+              [ p [ class "title"] [ text "Category"]
+              , p [ class "value"] [ text contract.category.name]
+              ]
+        , div [ class "contract-column"]
+              [ p [ class "title"] [ text "Costs"]
+              , p [ class "value"] [ text ("$ " ++ (toString contract.cost))]
+              ]
+        , div [ class "contract-column"]
+              [ p [ class "title"] [ text "Ends On"]
+              , p [ class "value"] [ text contract.endDate]
+              ]
+        , div [ class "c-buttons"]
+              [ button [] [ text "EDIT"]
+              , button [] [text "DELETE"]
+              ]
+        ]
 
 
 

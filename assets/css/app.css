@@ -35,6 +35,25 @@ body {
   margin-right: 2rem;
 }
 
+.contract-page {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  background-color: #ffffff;
+  margin-left: 2rem;
+  margin-right: 2rem;
+  padding-right: 2rem;
+  padding-left: 2rem;
+  padding-top: .5rem;
+  padding-bottom: .5rem;
+}
+
+.c-buttons {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
 .contracts-list {
   overflow-x: scroll;
 }
