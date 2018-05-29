@@ -124,7 +124,8 @@ contractsView contractList =
                     [ p [ class "page-title"] [ text "My Contracts"]
                     , button [][text "ADD CONTRACT"]]
               ]
-        , div [] [list]]
+        , div [ class "contracts-list"] [list]
+        ]
 
 
 
@@ -134,11 +135,11 @@ contractsRow contract =
     div [ class "contract-item"]
         [ div [ class "contract-column"]
               [ p [ class "title"] [ text "Vendor"]
-              , p [ class "value"] [ text "-"]
+              , p [ class "value"] [ text contract.vendor.name]
               ]
         , div [ class "contract-column"]
               [ p [ class "title"] [ text "Category"]
-              , p [ class "value"] [ text "-"]
+              , p [ class "value"] [ text contract.category.name]
               ]
         , div [ class "contract-column"]
               [ p [ class "title"] [ text "Costs"]
