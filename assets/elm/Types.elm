@@ -59,8 +59,6 @@ type alias Person =
     , email : String
     }
 
-
-
 type alias PeopleResponse =
   Result GraphQLClient.Error (List Person)
 
@@ -72,7 +70,6 @@ type alias SignUpDetails =
   , email :  String
   , hash : String
   }
-
 
 type alias Session =
   { token : String
