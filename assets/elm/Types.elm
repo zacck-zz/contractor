@@ -24,6 +24,9 @@ type alias Model =
     , vendorSelectState : Select.State
     , selectedVendorId : Maybe String
     , availableVendors : List LoadedVendor
+    , categorySelectState : Select.State
+    , selectedCategoryId : Maybe String
+    , availableCategories : List Category
     }
 
 
@@ -61,7 +64,11 @@ type Msg
     | OnVendorSelect (Maybe LoadedVendor)
     | VendorQuery String
     | ReceiveVendorsResponse LoadedVendorResponse
-    | SelectMsg (Select.Msg LoadedVendor)
+    | SelectVendor (Select.Msg LoadedVendor)
+    | OnCategorySelect (Maybe Category)
+    | CategoryQuery String
+    | SelectCategory (Select.Msg Category)
+    | ReceiveCategoriesResponse CategoriesResponse
 
 
 
@@ -94,6 +101,12 @@ type alias LoginDetails =
 
 type alias LoginInput =
   { input : LoginDetails }
+
+type alias CategoriesInput =
+  { id : String }
+
+type alias CategoriesResponse =
+  Result GraphQLClient.Error (List Category)
 
 type alias Contract =
   { id : String
