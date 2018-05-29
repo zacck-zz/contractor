@@ -16,11 +16,14 @@ type alias Model =
     , password : String
     , passwordconf : String
     , errors : List String
-    , registration : Maybe Registration
+    , loggedId : Maybe String
+    , contractCategory : String
+    , contractCost : Float
+    , contractVendor : String
+    , endsDate : String
     , people : List Person
     , contracts : List Contract
     , activeContract : String
-    , newContract : Maybe Contract
     , vendorSelectState : Select.State
     , selectedVendorId : Maybe String
     , availableVendors : List LoadedVendor
@@ -59,8 +62,10 @@ type Msg
     | FetchContracts
     | OpenContract String
     | SaveContract
-    | SetCosts String
-    | SetEnds String
+    | SetNewContractCost String
+    | SetNewContractEnds String
+    | SetNewContractCategory String
+    | SetNewContractVendor String
     | OnVendorSelect (Maybe LoadedVendor)
     | VendorQuery String
     | ReceiveVendorsResponse LoadedVendorResponse
@@ -69,6 +74,7 @@ type Msg
     | CategoryQuery String
     | SelectCategory (Select.Msg Category)
     | ReceiveCategoriesResponse CategoriesResponse
+    | ReceiveAddContractResponse AddContractResponse
 
 
 
@@ -77,6 +83,7 @@ type alias Person =
     , name : String
     , email : String
     }
+
 
 type alias PeopleResponse =
   Result GraphQLClient.Error (List Person)
@@ -92,6 +99,7 @@ type alias SignUpDetails =
 
 type alias Session =
   { token : String
+  , person : Person
   }
 
 type alias LoginDetails =
@@ -116,6 +124,26 @@ type alias Contract =
   , vendor : PlainVendor
   }
 
+type alias ContractResult =
+  { id : String
+  , endDate : String
+  , cost : Float
+  }
+
+type alias AddContractResponse =
+  Result GraphQLClient.Error ContractResult
+
+type alias ContractInput =
+  { input : ContractInputDetails}
+
+type alias ContractInputDetails =
+  { person_id : String
+  , category_id : String
+  , vendor_id : String
+  , cost : Float
+  , end_date : String
+  }
+
 type alias ContractsResponse =
   Result GraphQLClient.Error (List Contract)
 
@@ -134,7 +162,6 @@ type alias PlainVendor =
   { id : String
   , name : String
   }
-
 
 type alias LoadedVendorResponse =
  Result GraphQLClient.Error (List LoadedVendor)
