@@ -32,6 +32,30 @@ Contractor is built using the Phoenix framework. We use [Elixir](https://elixir-
 
 
 
+# Application Flow
+
+## Screens
+
+### landing page
+![initial_page](https://user-images.githubusercontent.com/897731/40707534-3d23d31e-63f1-11e8-91fc-a28cff0909a7.png)
+
+### sign up
+![sign_up_page](https://user-images.githubusercontent.com/897731/40707533-3cf772a6-63f1-11e8-9bdb-6a2beaf115ff.png)
+
+### login
+![login_page](https://user-images.githubusercontent.com/897731/40707532-3cc615b2-63f1-11e8-805d-e1150874f559.png)
+
+### contracts
+![contracts_page](https://user-images.githubusercontent.com/897731/40707531-3c99babc-63f1-11e8-8bb1-89c17516c596.png)
+
+### contract details
+![contract_details](https://user-images.githubusercontent.com/897731/40707529-3c3e6acc-63f1-11e8-8cae-743e369715ed.png)
+
+### add contract
+![add_contract](https://user-images.githubusercontent.com/897731/40707530-3c68cd8a-63f1-11e8-89c7-8c3453ee4c71.png)
+
+
+
 # Authors
 
   *  **Zacck Osiemo** - *Initial Work* - [Zacck](https://github.com/zacck)
