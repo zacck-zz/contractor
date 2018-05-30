@@ -19,10 +19,16 @@ Contractor is built using the Phoenix framework. We use [Elixir](https://elixir-
       `git clone git@github.com:zacck/contractor.git`
   2. Install mix dependecies using the following command (run this in the project folder)
       `mix deps.get`
-  3. Install elm dependecies using the following command (run this in the assets directory)
+  3. Seed the database with some default data using the following command
+      `mix ecto.setup`
+  4. Install elm dependecies using the following command (run this in the assets directory)
       `elm-package install`
-  4. Run tests using the following command
+  5. Run tests using the following command
       `MIX_ENV=test mix test`
+  6. Start the application using
+      `mix phx.server`
+  7. Visit the running application on
+      [localhost](http://localhost:4000)
 
 
 
