@@ -1,5 +1,6 @@
 
 module Types exposing (..)
+
 import Http
 import Navigation exposing (Location)
 import Route

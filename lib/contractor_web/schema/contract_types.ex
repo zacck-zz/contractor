@@ -9,6 +9,9 @@ defmodule ContractorWeb.Schema.ContractTypes do
     field :person, :person
     field :category, :category
     field :vendor, :vendor
+    field :vendor_id, :string
+    field :category_id, :string
+    field :person_id, :string
   end
 
   @desc "A Contract Vendor"

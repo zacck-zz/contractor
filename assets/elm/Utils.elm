@@ -1,6 +1,6 @@
 module Utils exposing (..)
 
-import Types exposing(Person, Model,  Msg(..), LoadedVendor, Category)
+import Types exposing(Person, Model,  Msg(..), Category, LoadedVendor)
 import Validate exposing (Validator, ifBlank, ifInvalidEmail, ifFalse, ifTrue, validate)
 import GraphQL.Client.Http as GraphQLClient
 import GraphQL.Request.Builder exposing (..)
