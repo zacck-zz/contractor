@@ -13,7 +13,6 @@ defmodule Contractor.ContractsTest do
   @valid_category %{name: "Phone"}
   @valid_contract %{cost: 90.89, end_date: "2018-12-12"}
   describe "Contracts boundary " do
-
     test "can fetch a specific vendor category" do
       cat = insert(:category)
       assert Repo.aggregate(Category, :count, :id) == 1
@@ -51,7 +50,7 @@ defmodule Contractor.ContractsTest do
     test "errors out if contract does not exist" do
       id = "d965afab-d71e-4616-bd8f-f7604cb3df27"
       assert Repo.aggregate(Contract, :count, :id) == 0
-      assert {:error, "Contract with id: #{id} doesn't exist" } == Contracts.get_contract(id)
+      assert {:error, "Contract with id: #{id} doesn't exist"} == Contracts.get_contract(id)
     end
 
     test "can fetch user's contracts" do
@@ -67,14 +66,18 @@ defmodule Contractor.ContractsTest do
       person = insert(:person)
       insert_list(@num, :contract)
       assert Repo.aggregate(Contract, :count, :id) == @num
-      assert {:error, "#{person.name} has no active contracts"} == Contracts.get_user_contracts(person)
+
+      assert {:error, "#{person.name} has no active contracts"} ==
+               Contracts.get_user_contracts(person)
     end
 
     test "errors out when user's contracts are expired" do
       person = insert(:person)
       insert_list(@num, :contract, person: person, end_date: "2016-12-12")
       assert Repo.aggregate(Contract, :count, :id) == @num
-      assert {:error, "#{person.name} has no active contracts"} == Contracts.get_user_contracts(person)
+
+      assert {:error, "#{person.name} has no active contracts"} ==
+               Contracts.get_user_contracts(person)
     end
 
     test "can add a user contract" do
@@ -91,7 +94,10 @@ defmodule Contractor.ContractsTest do
       assert Repo.aggregate(Contract, :count, :id) == 1
       vendor = insert(:vendor)
       category = insert(:category, vendor: vendor)
-      assert {:ok, updated_contract} = Contracts.update_contract(contract, vendor, category, @valid_contract)
+
+      assert {:ok, updated_contract} =
+               Contracts.update_contract(contract, vendor, category, @valid_contract)
+
       assert updated_contract.id == contract.id
       refute updated_contract.cost == contract.cost
       refute updated_contract.end_date == contract.end_date
@@ -163,7 +169,9 @@ defmodule Contractor.ContractsTest do
       vendor = insert(:vendor)
       assert Repo.aggregate(Vendor, :count, :id) == 1
       assert Repo.aggregate(Category, :count, :id) == 0
-      assert {:error, "#{vendor.name} has no categories available"} == Contracts.get_vendor_categories(vendor)
+
+      assert {:error, "#{vendor.name} has no categories available"} ==
+               Contracts.get_vendor_categories(vendor)
     end
   end
 end

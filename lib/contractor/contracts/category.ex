@@ -5,6 +5,7 @@ defmodule Contractor.Contracts.Category do
   """
   use Ecto.Schema
   import Ecto.Changeset
+
   alias Contractor.{
     Contracts.Category,
     Contracts.Vendor
@@ -16,19 +17,19 @@ defmodule Contractor.Contracts.Category do
   @foreign_key_type :binary_id
 
   schema "categories" do
-    field :name, :string
-    belongs_to :vendor, Vendor, foreign_key: :vendor_id, type: :binary_id
+    field(:name, :string)
+    belongs_to(:vendor, Vendor, foreign_key: :vendor_id, type: :binary_id)
     timestamps(inserted_at: :created_at, updated_at: :updated_at)
   end
 
-  @spec changeset(%Category{}, map) :: {:ok, Category.t} | {:error, Ecto.Changeset.t()}
-  def changeset(%Category{} = cat, attrs ) do
+  @spec changeset(%Category{}, map) :: {:ok, Category.t()} | {:error, Ecto.Changeset.t()}
+  def changeset(%Category{} = cat, attrs) do
     cat
     |> cast(attrs, [:name])
     |> validate_required([:name])
   end
 
-  @spec create_changeset(Vendor.t, map) :: Ecto.Changeset.t()
+  @spec create_changeset(Vendor.t(), map) :: Ecto.Changeset.t()
   def create_changeset(%Vendor{} = vendor, attrs) do
     %Category{}
     |> changeset(attrs)

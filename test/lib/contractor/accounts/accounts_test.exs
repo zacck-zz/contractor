@@ -6,8 +6,12 @@ defmodule Contractor.AccountsTest do
     Accounts.Person
   }
 
-  @valid_attrs %{email: "zacck@contractor.com", name: "Zacck",  token: "72ye82gfjh3vfywvjhwbfyuwegfytefuy%&qjbwfiu", hash: "7t24823ty4ubfucy34gruwbur3gre821hduh37ce"}
-
+  @valid_attrs %{
+    email: "zacck@contractor.com",
+    name: "Zacck",
+    token: "72ye82gfjh3vfywvjhwbfyuwegfytefuy%&qjbwfiu",
+    hash: "7t24823ty4ubfucy34gruwbur3gre821hduh37ce"
+  }
 
   describe "Accounts context" do
     test "can create a person's account" do
@@ -16,7 +20,6 @@ defmodule Contractor.AccountsTest do
       assert person.email == @valid_attrs.email
       assert person.name == @valid_attrs.name
     end
-
 
     test "can list users on the platform" do
       insert_list(3, :person)

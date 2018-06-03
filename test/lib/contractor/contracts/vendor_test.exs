@@ -7,7 +7,6 @@ defmodule Contractor.Contracts.VendorTest do
 
   @valid_attrs %{name: "Vodafone"}
   describe "vendor changeset" do
-
     test "should be valid with valid data " do
       changeset = Vendor.changeset(%Vendor{}, @valid_attrs)
       assert changeset.valid?

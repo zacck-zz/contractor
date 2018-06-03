@@ -7,7 +7,6 @@ defmodule ContractorWeb.Resolvers.AccountsTest do
 
   @num 5
   describe "Accounts resolver" do
-
     test "adds a person to system", %{conn: conn} do
       assert Repo.aggregate(Person, :count, :id) == 0
 
@@ -28,7 +27,7 @@ defmodule ContractorWeb.Resolvers.AccountsTest do
         }
       """
 
-      res = post conn, "api/graph", query: query, variables: variables
+      res = post(conn, "api/graph", query: query, variables: variables)
 
       %{
         "data" => %{
@@ -44,6 +43,7 @@ defmodule ContractorWeb.Resolvers.AccountsTest do
     test "fetches people on the system", %{conn: conn} do
       insert_list(@num, :person)
       assert Repo.aggregate(Person, :count, :id) == @num
+
       query = """
       query {
         people{
@@ -52,7 +52,7 @@ defmodule ContractorWeb.Resolvers.AccountsTest do
       }
       """
 
-      res = post conn, "api/graph", query: query
+      res = post(conn, "api/graph", query: query)
 
       %{
         "data" => %{
@@ -63,10 +63,10 @@ defmodule ContractorWeb.Resolvers.AccountsTest do
       assert Enum.count(people) == @num
     end
 
-
     @tag :authenticated
     test "fetches a single person from the system", %{conn: conn, current_user: person} do
       assert Repo.aggregate(Person, :count, :id) == 1
+
       query = """
       query {
         person(id: "#{person.id}"){
@@ -76,14 +76,13 @@ defmodule ContractorWeb.Resolvers.AccountsTest do
       }
       """
 
-      res = post conn, "api/graph", query: query
+      res = post(conn, "api/graph", query: query)
 
       %{
         "data" => %{
           "person" => saved_person
         }
       } = json_response(res, 200)
-
 
       assert saved_person["id"] == person.id
       assert saved_person["email"] == person.email

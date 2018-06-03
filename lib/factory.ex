@@ -32,5 +32,4 @@ defmodule Contractor.Factory do
       category: build(:category)
     }
   end
-
 end

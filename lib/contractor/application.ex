@@ -4,6 +4,7 @@ defmodule Contractor.Application do
   application callbacks
   """
   use Application
+
   def start(_type, _args) do
     import Supervisor.Spec
 
@@ -12,7 +13,7 @@ defmodule Contractor.Application do
       # Start the Ecto repository
       supervisor(Contractor.Repo, []),
       # Start the endpoint when the application starts
-      supervisor(ContractorWeb.Endpoint, []),
+      supervisor(ContractorWeb.Endpoint, [])
       # Start your own worker by calling: Contractor.Worker.start_link(arg1, arg2, arg3)
       # worker(Contractor.Worker, [arg1, arg2, arg3]),
     ]

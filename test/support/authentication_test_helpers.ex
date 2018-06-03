@@ -2,9 +2,10 @@ defmodule Contractor.AuthenticationTestHelpers do
   use Phoenix.ConnTest
   import Contractor.Factory
 
-  #when given a connection to authenticate create a user call auth witht user and conn
+  # when given a connection to authenticate create a user call auth witht user and conn
   def authenticate(conn) do
     user = insert(:person)
+
     conn
     |> authenticate(user)
   end

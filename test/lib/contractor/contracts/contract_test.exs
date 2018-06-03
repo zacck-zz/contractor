@@ -33,7 +33,7 @@ defmodule Contractor.Contracts.ContractTest do
       person = insert(:person)
       vendor = insert(:vendor)
       category = insert(:category, vendor: vendor)
-      changeset = Contract.create_changeset(person, vendor, category, @invalid_attrs) 
+      changeset = Contract.create_changeset(person, vendor, category, @invalid_attrs)
       refute changeset.valid?
     end
 
@@ -54,5 +54,4 @@ defmodule Contractor.Contracts.ContractTest do
       assert changeset.valid?
     end
   end
-
 end

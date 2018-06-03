@@ -25,13 +25,13 @@ defmodule ContractorWeb.ChannelCase do
     end
   end
 
-
   setup tags do
     :ok = Ecto.Adapters.SQL.Sandbox.checkout(Contractor.Repo)
+
     unless tags[:async] do
       Ecto.Adapters.SQL.Sandbox.mode(Contractor.Repo, {:shared, self()})
     end
+
     :ok
   end
-
 end

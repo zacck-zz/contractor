@@ -30,21 +30,23 @@ defmodule ContractorWeb.ConnCase do
     end
   end
 
-
   setup tags do
     :ok = Ecto.Adapters.SQL.Sandbox.checkout(Contractor.Repo)
+
     unless tags[:async] do
       Ecto.Adapters.SQL.Sandbox.mode(Contractor.Repo, {:shared, self()})
     end
 
-    {conn, current_user} = cond do
-      tags[:authenticated] ->
-        build_conn()
-        |> add_authentication_headers(tags[:authenticated])
-      true ->
-        conn = build_conn()
-        {conn, nil}
-    end
+    {conn, current_user} =
+      cond do
+        tags[:authenticated] ->
+          build_conn()
+          |> add_authentication_headers(tags[:authenticated])
+
+        true ->
+          conn = build_conn()
+          {conn, nil}
+      end
 
     {:ok, conn: conn, current_user: current_user}
   end
@@ -55,5 +57,4 @@ defmodule ContractorWeb.ConnCase do
     conn = conn |> Contractor.AuthenticationTestHelpers.authenticate(user)
     {conn, user}
   end
-
 end
