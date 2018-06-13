@@ -49,6 +49,8 @@ defmodule Contractor.Contracts.ContractTest do
       insert(:contract)
       vendor = insert(:vendor)
       category = insert(:category, vendor: vendor)
+
+      # credo:disable-for-next-line
       contract = Repo.one(Contract) |> Repo.preload([:vendor, :category, :person])
       changeset = Contract.update_changeset(contract, vendor, category, @valid_attrs)
       assert changeset.valid?

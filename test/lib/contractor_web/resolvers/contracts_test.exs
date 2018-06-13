@@ -49,6 +49,7 @@ defmodule ContractorWeb.Resolvers.ContractsTest do
       } = json_response(res, 200)
 
       assert Repo.aggregate(Contract, :count, :id) == 1
+      
       assert saved_contract["personId"] == person.id
       assert saved_contract["vendorId"] == vendor.id
       assert saved_contract["cost"] == variables["input"]["cost"]

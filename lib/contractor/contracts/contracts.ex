@@ -41,6 +41,7 @@ defmodule Contractor.Contracts do
 
     query = from(c in q, order_by: [asc: c.end_date])
 
+    # credo:disable-for-next-line
     with [_ | _] = contracts <- Repo.all(query) |> Repo.preload([:person, :category, :vendor]) do
       {:ok, contracts}
     else

@@ -38,6 +38,7 @@ defmodule ContractorWeb.ConnCase do
     end
 
     {conn, current_user} =
+      # credo:disable-for-next-line
       cond do
         tags[:authenticated] ->
           build_conn()

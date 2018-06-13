@@ -36,6 +36,7 @@ defmodule Contractor.Accounts.PersonTest do
       assert Repo.aggregate(Person, :count, :id) == 1
 
       {:error, invalid_changeset} =
+        # credo:disable-for-next-line
         Person.changeset(%Person{}, %{
           email: saved_person.email,
           token: saved_person.token,
