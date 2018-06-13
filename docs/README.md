@@ -17,6 +17,8 @@ Contractor is built using the Phoenix framework. We use [Elixir](https://elixir-
 ### Getting Up and Running
   1. Clone this repository using the following command
       `git clone git@github.com:zacck/contractor.git`
+  2. Set up your git local githooks copy the files in the `/hooks` folder into the `.git` folder
+		`cd /hooks && cp * ../.git/hooks`
   2. Install mix dependecies using the following command (run this in the project folder)
       `mix deps.get`
   3. Seed the database with some default data using the following command
