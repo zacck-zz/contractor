@@ -1,6 +1,6 @@
 defmodule Contractor.Auth.BearerAuth do
   @moduledoc """
-  This odule builds an authndication pipelined that is used for the 
+  This odule builds an authentication pipeline that is used for the 
   `maybe_logged` in state
   """
   use Guardian.Plug.Pipeline,
