@@ -1,4 +1,8 @@
 defmodule ContractorWeb.Schema.AccountTypes do
+  @moduledoc """
+  This module contains GraphQL types used with 
+  the accounts context.
+  """
   use Absinthe.Schema.Notation
 
   @desc "A system user"

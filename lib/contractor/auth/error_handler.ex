@@ -1,4 +1,7 @@
 defmodule Contractor.Auth.ErrorHandler do
+  @moduledoc """
+  Error handling plug for the Authentication context this is used by Guardian
+  """
   import Plug.Conn
 
   def auth_error(conn, {type, _reason}, _opts) do

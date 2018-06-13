@@ -14,7 +14,9 @@ defmodule Contractor.Auth do
   def auth_user(email, password) do
     query = from(p in Person, where: p.email == ^email)
 
-    Repo.one(query)
+    user = Repo.one(query)
+
+    user 
     |> validate_hash(password)
   end
 

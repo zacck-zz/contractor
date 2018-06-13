@@ -1,4 +1,9 @@
 defmodule Contractor.Factory do
+  @moduledoc """
+  This module containing factories for application data
+  use these factories to generate dummy data for tests 
+  and the development environment
+  """
   use ExMachina.Ecto, repo: Contractor.Repo
 
   def person_factory do

@@ -1,4 +1,8 @@
 defmodule ContractorWeb.Schema.Middleware.ChangesetErrors do
+  @moduledoc """
+  This module contains helper functions for formatting changeset errors into 
+  a nice response for our resolvers
+  """
   @behaviour Absinthe.Middleware
 
   def call(res, _) do

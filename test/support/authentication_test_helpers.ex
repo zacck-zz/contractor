@@ -1,8 +1,14 @@
 defmodule Contractor.AuthenticationTestHelpers do
+  @moduledoc """
+  This module contains helper functions for adding an authentication token to a conn struct
+  """
   use Phoenix.ConnTest
   import Contractor.Factory
 
-  # when given a connection to authenticate create a user call auth witht user and conn
+  @doc """
+  when given a connection to authenticate 
+  create a user call auth with the created user and conn
+  """
   def authenticate(conn) do
     user = insert(:person)
 

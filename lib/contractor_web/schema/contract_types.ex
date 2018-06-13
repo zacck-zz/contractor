@@ -1,4 +1,8 @@
 defmodule ContractorWeb.Schema.ContractTypes do
+  @moduledoc """
+  This module contains GraphQL types  that are used with 
+  the Contracts Context
+  """
   use Absinthe.Schema.Notation
 
   @desc "A Users Contract"

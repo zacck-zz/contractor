@@ -1,4 +1,8 @@
 defmodule Contractor.Auth.BearerAuth do
+  @moduledoc """
+  This odule builds an authndication pipelined that is used for the 
+  `maybe_logged` in state
+  """
   use Guardian.Plug.Pipeline,
     otp_app: :spender,
     error_handler: Contractor.Auth.ErrorHandler,

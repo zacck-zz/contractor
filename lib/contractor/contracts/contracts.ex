@@ -52,7 +52,9 @@ defmodule Contractor.Contracts do
   @spec add_contract(Person.t(), Vendor.t(), Category.t(), map) ::
           {:ok, Contract.t()} | {:error, Ecto.Changeset.t()}
   def add_contract(%Person{} = person, %Vendor{} = vendor, %Category{} = category, attrs) do
-    Contract.create_changeset(person, vendor, category, attrs)
+    contract = Contract.create_changeset(person, vendor, category, attrs)
+
+    contract  
     |> Repo.insert()
   end
 

@@ -1,12 +1,19 @@
 defmodule ContractorWeb.Schema do
+  @moduledoc """
+  This module contains the GraphQL schema for the application
+  """
   use Absinthe.Schema
   alias ContractorWeb.Resolvers
   alias ContractorWeb.Schema.Middleware
 
+
+  # Import types
   import_types(Absinthe.Type.Custom)
   import_types(__MODULE__.ContractTypes)
   import_types(__MODULE__.AccountTypes)
 
+
+  # Add middleware to fields that need it
   def middleware(middleware, _field, %{identifier: :mutation}) do
     middleware ++ [Middleware.ChangesetErrors]
   end
