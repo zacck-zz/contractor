@@ -44,4 +44,48 @@ stage and an output stage
       end)
 
   end
+   # Using GenStages
+   # lets build a producer that emits counts
+   defmodule InputStage do
+     @moduledoc """
+     This module is a Producer in our GenStage Pipeline
+     """
+     use GenStage
+     # init our process with some state
+     @spec init(integer()) :: {atom(), integer()}
+     def init(counter) do
+       {:producer, counter}
+     end
+
+     @doc """
+     Handle demand functions are called everytime a consumer that
+     is subscribed to this producer asks for an event/thing the
+     name matters if you are doing event sourcing
+     """
+     @spec handle_demand(integer(), integer()) :: {atom(), list(), integer()}
+     def handle_demand(demand, counter) when demand > 0 do
+       events = Enum.to_list(counter..counter+demand-1)
+       {:noreply, events, counter + demand}
+     end
+   end
+
+   defmodule OutputStage do
+     @moduledoc """
+     This module is a Consumer for events from out producer Stage
+     """
+     @spec init(atom()) :: {atom(), any()}
+     def init(:ok) do
+       {:consumer, :the_state_doesnt_matter}
+     end
+
+     @doc """
+     Invoked when producers send events
+     """
+     @spec handle_events(list(), pid(), integer()) :: {atom(), list(), integer()}
+     def handle_events(events, _from, state) do
+       Process.sleep(1000) # do work here
+       IO.inspect(events)
+       {:noreply, [], state}
+     end
+   end
 end
