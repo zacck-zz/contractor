@@ -44,6 +44,27 @@ stage and an output stage
       end)
 
   end
+
+
+  @doc """
+  This function reads this file concurrently
+  here instead of reading the file line by line and counting
+  We are using different processes and hence different cores to process stages of
+  our computation concurrently
+  """
+  def consume(:flow, path) do
+    map =
+      #get a stream of a file line by line
+      File.stream!(path)
+      |> Flow.from_enumerable() # lets make a flow from a stream :producer genStage
+      |> Flow.flat_map(&String.split/1) # start a bunch of other stages to do the work
+      |> Flow.partition() # this sets up a new group of workers to process data that may coflict
+      |> Flow.reduce(fn -> %{} end, fn word, map ->
+        Map.update(map, word, 1, & &1 + 1)
+      end)
+   end
+
+
    # Using GenStages
    # lets build a producer that emits counts
    defmodule InputStage do
@@ -88,4 +109,6 @@ stage and an output stage
        {:noreply, [], state}
      end
    end
+
+
 end
