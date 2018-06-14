@@ -26,4 +26,22 @@ stage and an output stage
        end)
   end
 
+  @doc """
+  This function reads this file lazily
+  here instead of loading the whole file into memory then processing them
+  we instead consume the file line by line
+  - less memory
+  - more computationaly expensive
+  """
+  def consume(:lazy, path) do
+    # lets return the file only when we need the file
+    # and when we do let take it in line by line
+    map =
+     File.stream!(path)
+      |> Stream.flat_map(&String.split/1) # for each line here we break it into words
+      |> Enum.reduce(%{}, fn word, map ->
+        Map.update(map, word, 1, & &1 + 1 )
+      end)
+
+  end
 end
